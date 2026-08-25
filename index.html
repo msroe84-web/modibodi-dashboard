@@ -8,19 +8,22 @@
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
 
   :root {
-    --sidebar-bg: #101B2D;
-    --sidebar-text: #93A0B8;
-    --sidebar-active: rgba(255,255,255,0.08);
-    --bg: #F2F4F8;
-    --surface: #FFFFFF;
-    --ink: #1F2733;
-    --ink-soft: #6B7686;
-    --ink-faint: #9AA3B2;
-    --line: #E7EAF0;
-    --accent: #2DA8E0;
-    --pos: #1FA35A;
-    --neg: #E0473F;
+    --sidebar-bg: #0A0A0B;
+    --sidebar-text: #B0A99C;
+    --sidebar-active: rgba(246,89,52,0.14);
+    --bg: #0C0C0D;
+    --surface: #18181A;
+    --surface-2: #202022;
+    --ink: #F5F1EA;
+    --ink-soft: #B8AFA0;
+    --ink-faint: #8A8272;
+    --line: #2B2B2D;
+    --accent: #F65934;
+    --accent-soft: #EBDABE;
+    --pos: #5FBE85;
+    --neg: #F0574A;
   }
+  ::selection { background: rgba(246,89,52,0.35); }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; height: 100%; }
   body {
@@ -32,12 +35,13 @@
 
   .root { display: flex; min-height: 100vh; }
 
-  .sidebar { width: 176px; flex-shrink: 0; background: var(--sidebar-bg); padding: 20px 12px; }
-  .sidebar-title { font-family: 'Space Grotesk', sans-serif; color: white; font-size: 14px; font-weight: 700; padding: 0 8px 4px; }
-  .sidebar-sub { color: var(--sidebar-text); font-size: 10px; padding: 0 8px 18px; }
+  .sidebar { width: 180px; flex-shrink: 0; background: var(--sidebar-bg); padding: 22px 12px; border-right: 1px solid var(--line); }
+  .sidebar-title { font-family: 'Space Grotesk', sans-serif; color: var(--accent-soft); font-size: 14px; font-weight: 700; padding: 0 8px 4px; }
+  .sidebar-sub { color: var(--sidebar-text); font-size: 10px; padding: 0 8px 20px; }
+  .nav-group-label { color: #5C574C; font-size: 9.5px; letter-spacing: 0.06em; text-transform: uppercase; padding: 10px 10px 4px; }
   .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 8px; color: var(--sidebar-text); font-size: 13px; font-weight: 500; cursor: pointer; margin-bottom: 3px; user-select: none; }
-  .nav-item:hover { background: rgba(255,255,255,0.05); color: white; }
-  .nav-item.active { background: var(--sidebar-active); color: white; }
+  .nav-item:hover { background: rgba(246,89,52,0.08); color: var(--accent-soft); }
+  .nav-item.active { background: var(--sidebar-active); color: var(--accent-soft); }
   .nav-item .dot { width: 5px; height: 5px; border-radius: 50%; margin-left: auto; background: transparent; }
   .nav-item.active .dot { background: var(--accent); }
 
@@ -70,7 +74,7 @@
   .ranked-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; font-size: 12px; }
   .ranked-num { width: 14px; color: var(--ink-faint); font-size: 11px; }
   .ranked-label { width: 92px; flex-shrink: 0; }
-  .ranked-bar-wrap { flex: 1; background: #F0F2F6; border-radius: 4px; height: 8px; overflow: hidden; }
+  .ranked-bar-wrap { flex: 1; background: rgba(255,255,255,0.06); border-radius: 4px; height: 8px; overflow: hidden; }
   .ranked-bar { height: 100%; border-radius: 4px; }
   .ranked-value { width: 80px; text-align: right; color: var(--ink-soft); flex-shrink: 0; }
 
@@ -80,10 +84,10 @@
   .swatch { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
   .empty { padding: 30px 0; font-size: 12px; color: var(--ink-faint); text-align: center; }
 
-  .btn { border: 1px solid var(--line); background: var(--surface); border-radius: 7px; padding: 6px 11px; font-size: 12px; font-weight: 500; color: var(--ink); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
-  .btn:hover { background: #F5F6F8; }
-  .btn.accent { background: var(--accent); border: none; color: white; }
-  .btn.accent:hover { opacity: 0.9; }
+  .btn { border: 1px solid var(--line); background: var(--surface-2); border-radius: 7px; padding: 6px 11px; font-size: 12px; font-weight: 500; color: var(--ink); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
+  .btn:hover { background: #292927; }
+  .btn.accent { background: var(--accent); border: none; color: #1A0D06; font-weight: 700; }
+  .btn.accent:hover { opacity: 0.88; }
 
   .commission-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; padding: 14px 16px; }
   .commission-item { border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; }
@@ -99,7 +103,20 @@
   table.data-table tbody tr:not(:last-child) td { border-bottom: 1px solid var(--line); }
   table.data-table input { width: 90px; border: none; background: transparent; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; padding: 3px 2px; border-radius: 5px; }
   table.data-table input[type="month"] { text-align: left; font-family: inherit; width: 110px; }
-  table.data-table input:focus { outline: 2px solid var(--accent); background: #EAF6FD; }
+  table.data-table input:focus { outline: 2px solid var(--accent); background: rgba(246,89,52,0.12); }
+  .gauge-wrap { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+  .gauge-label-big { font-size: 26px; font-weight: 700; }
+  .funnel-row { display: flex; align-items: center; gap: 12px; padding: 6px 0; font-size: 12px; }
+  .funnel-shape { height: 26px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #1A0D06; font-weight: 700; font-size: 11px; }
+  .overview-mini-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
+  @media (max-width: 900px) { .overview-mini-grid { grid-template-columns: repeat(2, 1fr); } }
+  .milestone-row { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--line); font-size: 12.5px; }
+  .milestone-row:last-child { border-bottom: none; }
+  .milestone-title { flex: 1; }
+  .milestone-cat { font-size: 10.5px; color: var(--ink-faint); width: 90px; flex-shrink: 0; }
+  .milestone-due { font-size: 11px; color: var(--ink-soft); width: 90px; flex-shrink: 0; }
+  .status-select { border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); border-radius: 6px; padding: 4px 8px; font-size: 11px; width: 84px; }
+  .status-badge { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
   .strong { font-weight: 700; }
   .muted { color: var(--ink-soft); }
   .del-btn { background: none; border: none; color: var(--ink-faint); cursor: pointer; padding: 4px; font-size: 14px; }
@@ -138,24 +155,29 @@
 <script>
 /* ---------------- 구글시트 연동 설정 (여기 두 값만 채우면 됩니다) ---------------- */
 // Apps Script 배포 후 나온 웹 앱 URL을 붙여넣으세요 (https://script.google.com/macros/s/xxxx/exec)
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx3ILS_u6RlaypjvAIrhC-33nW7bp-FKgzwn_6Rhjim_VY8yI8SFHZppPQkPDYNE9QE8g/exec";
+const APPS_SCRIPT_URL = "여기에_배포된_웹앱_URL을_붙여넣으세요";
 // Apps Script 코드에 설정한 SECRET 값과 동일하게 맞추세요
-const SECRET_TOKEN = "modibodi2026";
+const SECRET_TOKEN = "여기에_비밀번호를_설정하세요";
 
 /* ---------------- storage ---------------- */
 const STORAGE_KEY = "biz-dashboard-local-v1"; // 오프라인 캐시용 (구글시트 연동 실패 시 대비)
 const CONFIGURED = APPS_SCRIPT_URL.indexOf("http") === 0;
 
+// 오렌지(#F65934) → 크림(#EBDABE) 그라데이션 팔레트
+const GRAD6 = ["#F65934", "#F47350", "#F28D6B", "#EFA687", "#EDC0A2", "#EBDABE"];
+const GRAD5 = ["#F65934", "#F37957", "#F19A79", "#EEBA9C", "#EBDABE"];
+const GRAD3 = ["#F65934", "#F19A79", "#EBDABE"];
+
 function defaultState() {
   return {
     sales: {
       channels: [
-        { id: "cafe24", name: "카페24", color: "#2DA8E0", commission: 3.5 },
-        { id: "smartstore", name: "스마트스토어", color: "#8B5CF6", commission: 3.63 },
-        { id: "29cm", name: "29CM", color: "#F59E0B", commission: 0 },
-        { id: "musinsa", name: "무신사", color: "#22C55E", commission: 0 },
-        { id: "kakao", name: "카카오선물", color: "#EAB308", commission: 0 },
-        { id: "wconcept", name: "W컨셉", color: "#EF4444", commission: 0 }
+        { id: "cafe24", name: "카페24", color: GRAD6[0], commission: 3.5 },
+        { id: "smartstore", name: "스마트스토어", color: GRAD6[1], commission: 3.63 },
+        { id: "29cm", name: "29CM", color: GRAD6[2], commission: 0 },
+        { id: "musinsa", name: "무신사", color: GRAD6[3], commission: 0 },
+        { id: "kakao", name: "카카오선물", color: GRAD6[4], commission: 0 },
+        { id: "wconcept", name: "W컨셉", color: GRAD6[5], commission: 0 }
       ],
       rows: [
         { id: "s1", month: "2026-06", amounts: { cafe24: 0, smartstore: 0, "29cm": 0, musinsa: 0, kakao: 0, wconcept: 0 } },
@@ -165,11 +187,11 @@ function defaultState() {
     },
     marketing: {
       channels: [
-        { id: "meta", name: "Meta", color: "#2DA8E0" },
-        { id: "naver", name: "네이버", color: "#22C55E" },
-        { id: "google", name: "구글", color: "#F59E0B" },
-        { id: "tiktok", name: "틱톡", color: "#EC4899" },
-        { id: "retargeting", name: "리타겟팅", color: "#8B5CF6" }
+        { id: "meta", name: "Meta", color: GRAD5[0] },
+        { id: "naver", name: "네이버", color: GRAD5[1] },
+        { id: "google", name: "구글", color: GRAD5[2] },
+        { id: "tiktok", name: "틱톡", color: GRAD5[3] },
+        { id: "retargeting", name: "리타겟팅", color: GRAD5[4] }
       ],
       rows: [
         { id: "m1", month: "2026-06", spend: { meta: 0, naver: 0, google: 0, tiktok: 0, retargeting: 0 }, conversions: 0, revenue: 0 },
@@ -179,11 +201,11 @@ function defaultState() {
     },
     crm: {
       tiers: [
-        { id: "seed", name: "Seed", color: "#A7F3D0" },
-        { id: "root", name: "Root", color: "#6EE7B7" },
-        { id: "bloom", name: "Bloom", color: "#34D399" },
-        { id: "canopy", name: "Canopy", color: "#10B981" },
-        { id: "keeper", name: "Keeper", color: "#047857" }
+        { id: "seed", name: "Seed", color: GRAD5[4] },
+        { id: "root", name: "Root", color: GRAD5[3] },
+        { id: "bloom", name: "Bloom", color: GRAD5[2] },
+        { id: "canopy", name: "Canopy", color: GRAD5[1] },
+        { id: "keeper", name: "Keeper", color: GRAD5[0] }
       ],
       rows: [
         { id: "c1", month: "2026-06", kakaoFriends: 0, newSignups: 0 },
@@ -195,17 +217,17 @@ function defaultState() {
     },
     analytics: {
       channels: [
-        { id: "social", name: "소셜", color: "#2DA8E0" },
-        { id: "direct", name: "다이렉트", color: "#0EA5E9" },
-        { id: "organic", name: "오가닉 검색", color: "#22C55E" },
-        { id: "referral", name: "레퍼럴", color: "#F59E0B" },
-        { id: "paid", name: "유료검색", color: "#EF4444" },
-        { id: "display", name: "디스플레이", color: "#8B5CF6" }
+        { id: "social", name: "소셜", color: GRAD6[0] },
+        { id: "direct", name: "다이렉트", color: GRAD6[1] },
+        { id: "organic", name: "오가닉 검색", color: GRAD6[2] },
+        { id: "referral", name: "레퍼럴", color: GRAD6[3] },
+        { id: "paid", name: "유료검색", color: GRAD6[4] },
+        { id: "display", name: "디스플레이", color: GRAD6[5] }
       ],
       devices: [
-        { id: "desktop", name: "데스크탑", color: "#2DA8E0" },
-        { id: "mobile", name: "모바일", color: "#F59E0B" },
-        { id: "tablet", name: "태블릿", color: "#8B5CF6" }
+        { id: "desktop", name: "데스크탑", color: GRAD3[0] },
+        { id: "mobile", name: "모바일", color: GRAD3[1] },
+        { id: "tablet", name: "태블릿", color: GRAD3[2] }
       ],
       rows: [
         { id: "a1", month: "2026-06", sessions: 0, conversionRate: 0, bounceRate: 0, avgDuration: 0 },
@@ -214,6 +236,16 @@ function defaultState() {
       ],
       channelSessions: { social: 0, direct: 0, organic: 0, referral: 0, paid: 0, display: 0 },
       deviceSessions: { desktop: 0, mobile: 0, tablet: 0 }
+    },
+    roadmap: {
+      milestones: [
+        { id: "rm1", title: "modibodi.kr SSL/도메인 이슈 해결", category: "인프라", status: "진행중", due: "2026-09" },
+        { id: "rm2", title: "GTM Readiness Questionnaire 제출", category: "런칭준비", status: "완료", due: "2026-08" },
+        { id: "rm3", title: "T1런 부스 참가", category: "오프라인", status: "진행중", due: "2026-09" },
+        { id: "rm4", title: "학교 아웃리치 (소이현)", category: "인플루언서", status: "예정", due: "2026-10" },
+        { id: "rm5", title: "카카오톡 1,000명 확보", category: "CRM", status: "진행중", due: "2026-09" },
+        { id: "rm6", title: "Cafe24 다국어 스토어 정리", category: "인프라", status: "예정", due: "2026-09" }
+      ]
     }
   };
 }
@@ -231,7 +263,7 @@ function saveLocalCache(s) {
 }
 
 let state = loadLocalCache() || defaultState();
-let ui = { tab: "sales", tableOpen: {}, settingsOpen: {} };
+let ui = { tab: "overview", tableOpen: {}, settingsOpen: {} };
 let saveTimer = null;
 
 function setSaveStatus(mode) {
@@ -336,16 +368,82 @@ function trendChartSVG(points, color, formatter) {
   const pts = values.map((v, i) => (pad + i * step).toFixed(1) + "," + (h - 30 - (v / max) * (h - 50)).toFixed(1)).join(" ");
   const area = pad + "," + (h - 30) + " " + pts + " " + (pad + (points.length - 1) * step) + "," + (h - 30);
   const labels = points.map((p, i) =>
-    '<text x="' + (pad + i * step).toFixed(1) + '" y="' + (h - 8) + '" font-size="10" fill="#9CA3AF" text-anchor="middle">' + p.label + '</text>'
+    '<text x="' + (pad + i * step).toFixed(1) + '" y="' + (h - 8) + '" font-size="10" fill="#8A8272" text-anchor="middle">' + p.label + '</text>'
   ).join("");
   const gridLines = [0.25, 0.5, 0.75, 1].map((f) =>
-    '<line x1="' + pad + '" x2="' + w + '" y1="' + (h - 30 - f * (h - 50)) + '" y2="' + (h - 30 - f * (h - 50)) + '" stroke="#EEF0F3" stroke-width="1"/>'
+    '<line x1="' + pad + '" x2="' + w + '" y1="' + (h - 30 - f * (h - 50)) + '" y2="' + (h - 30 - f * (h - 50)) + '" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>'
   ).join("");
   return '<svg viewBox="0 0 ' + w + ' ' + h + '" width="100%" height="230" preserveAspectRatio="none">' +
     gridLines +
     '<polyline points="' + area + '" fill="' + color + '30" stroke="none"/>' +
     '<polyline points="' + pts + '" fill="none" stroke="' + color + '" stroke-width="2.2"/>' +
     labels +
+    '</svg>';
+}
+
+/* 게이지(반원형 진행률) 차트 */
+function gaugeSVG(pct, color, size) {
+  size = size || 130;
+  const clamped = Math.max(0, Math.min(pct, 100));
+  const r = size / 2 - 12, cx = size / 2, cy = size / 2 + 6;
+  const circ = Math.PI * r; // 반원 둘레
+  const dash = (clamped / 100) * circ;
+  return '<svg width="' + size + '" height="' + (size / 2 + 20) + '" viewBox="0 0 ' + size + ' ' + (size / 2 + 20) + '">' +
+    '<path d="M ' + (cx - r) + ' ' + cy + ' A ' + r + ' ' + r + ' 0 0 1 ' + (cx + r) + ' ' + cy + '" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="12" stroke-linecap="round"/>' +
+    '<path d="M ' + (cx - r) + ' ' + cy + ' A ' + r + ' ' + r + ' 0 0 1 ' + (cx + r) + ' ' + cy + '" fill="none" stroke="' + color + '" stroke-width="12" stroke-linecap="round" ' +
+    'stroke-dasharray="' + dash.toFixed(1) + ' ' + circ.toFixed(1) + '"/>' +
+    '</svg>';
+}
+
+/* 퍼널(단계별 막대) 차트 - 첫 항목이 가장 넓고 점점 좁아지는 형태 */
+function funnelSVG(items, maxWidth) {
+  maxWidth = maxWidth || 100;
+  const max = Math.max(1, ...items.map((i) => i.value));
+  return items.map((it) => {
+    const widthPct = Math.max(6, (it.value / max) * maxWidth);
+    return '<div class="funnel-row">' +
+      '<div style="width:70px;flex-shrink:0;color:var(--ink-soft);">' + it.label + '</div>' +
+      '<div style="flex:1;"><div class="funnel-shape" style="width:' + widthPct.toFixed(1) + '%;background:' + it.color + ';">' + it.value.toLocaleString("ko-KR") + '</div></div>' +
+      '</div>';
+  }).join("");
+}
+
+/* 막대(광고비) + 라인(ROAS 등) 콤보 차트 */
+function comboChartSVG(points, barColor, lineColor, lineFormatter) {
+  const w = 640, h = 200, pad = 28, bottomPad = 30;
+  const barVals = points.map((p) => p.bar);
+  const lineVals = points.map((p) => p.line == null ? 0 : p.line);
+  const maxBar = Math.max(...barVals, 1);
+  const maxLine = Math.max(...lineVals, 1);
+  const step = (w - pad) / Math.max(points.length - 1, 1);
+  const barW = Math.min(28, step * 0.5);
+
+  const bars = points.map((p, i) => {
+    const x = pad + i * step - barW / 2;
+    const barH = (p.bar / maxBar) * (h - bottomPad - 20);
+    const y = h - bottomPad - barH;
+    return '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + barW.toFixed(1) + '" height="' + barH.toFixed(1) + '" rx="3" fill="' + barColor + '"/>';
+  }).join("");
+
+  const linePts = points.map((p, i) => {
+    const x = pad + i * step;
+    const y = p.line == null ? null : (h - bottomPad - 20) - (p.line / maxLine) * (h - bottomPad - 20);
+    return y == null ? null : x.toFixed(1) + "," + y.toFixed(1);
+  }).filter(Boolean).join(" ");
+
+  const dots = points.map((p, i) => {
+    if (p.line == null) return "";
+    const x = pad + i * step;
+    const y = (h - bottomPad - 20) - (p.line / maxLine) * (h - bottomPad - 20);
+    return '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="3" fill="' + lineColor + '"/>';
+  }).join("");
+
+  const labels = points.map((p, i) =>
+    '<text x="' + (pad + i * step).toFixed(1) + '" y="' + (h - 8) + '" font-size="10" fill="#8A8272" text-anchor="middle">' + p.label + '</text>'
+  ).join("");
+
+  return '<svg viewBox="0 0 ' + w + ' ' + h + '" width="100%" height="230" preserveAspectRatio="none">' +
+    bars + '<polyline points="' + linePts + '" fill="none" stroke="' + lineColor + '" stroke-width="2"/>' + dots + labels +
     '</svg>';
 }
 
@@ -369,7 +467,7 @@ function donutSVG(items) {
 
 /* ---------------- reusable HTML block builders ---------------- */
 function kpiCard(label, value, sub, deltaPct, color, sparkValues) {
-  const spark = sparkValues ? sparklineSVG(sparkValues, color || "#2DA8E0") : "";
+  const spark = sparkValues ? sparklineSVG(sparkValues, color || "#F65934") : "";
   const deltaHtml = deltaPct != null
     ? '<span class="kpi-delta" style="color:' + deltaColor(deltaPct) + '">' + deltaArrow(deltaPct) + ' ' + (deltaPct > 0 ? "+" : "") + deltaPct.toFixed(1) + '%</span>'
     : "";
@@ -420,6 +518,30 @@ function trendChartCard(title, points, color, formatter) {
     '<div style="padding:8px 16px 4px;">' + trendChartSVG(points, color, formatter) + '</div></div>';
 }
 
+function comboChartCard(title, points, barColor, lineColor, barLabel, lineLabel) {
+  const legend = '<div class="legend-row" style="margin:0 16px 8px;">' +
+    '<span class="legend-item"><span class="swatch" style="background:' + barColor + ';border-radius:2px;"></span>' + barLabel + '</span>' +
+    '<span class="legend-item"><span class="swatch" style="background:' + lineColor + ';"></span>' + lineLabel + '</span></div>';
+  return '<div class="card section-card"><div class="section-head"><div class="section-title">' + title + '</div></div>' +
+    legend +
+    '<div style="padding:0 16px 4px;">' + comboChartSVG(points, barColor, lineColor) + '</div></div>';
+}
+
+function gaugeCard(title, pct, color, sub) {
+  return '<div class="card section-card"><div class="section-head"><div class="section-title">' + title + '</div></div>' +
+    '<div class="gauge-wrap" style="padding:16px 18px;">' + gaugeSVG(pct, color) +
+    '<div><div class="gauge-label-big mono" style="color:' + color + '">' + Math.round(Math.min(pct, 999)) + '%</div>' +
+    (sub ? '<div style="font-size:11px;color:var(--ink-faint);margin-top:2px;">' + sub + '</div>' : '') + '</div></div></div>';
+}
+
+function funnelCard(title, items) {
+  const body = items.every((i) => i.value === 0)
+    ? '<div class="empty">데이터를 입력하면 퍼널이 표시됩니다</div>'
+    : funnelSVG(items);
+  return '<div class="card section-card"><div class="section-head"><div class="section-title">' + title + '</div></div>' +
+    '<div style="padding:10px 16px 16px;">' + body + '</div></div>';
+}
+
 function collapsibleTable(id, title, innerHtml, addBtnAction) {
   const open = !!ui.tableOpen[id];
   return '<div class="card section-card">' +
@@ -466,7 +588,7 @@ function renderSales() {
   const points = computed.map((r) => ({ label: r.month.slice(2), value: r.gross }));
 
   let html = '<div class="kpi-grid">';
-  html += kpiCard("이번 달 총 매출", formatEok(latest.gross), latest.month, null, "#2DA8E0", sparkGross);
+  html += kpiCard("이번 달 총 매출", formatEok(latest.gross), latest.month, null, "#F65934", sparkGross);
   html += kpiCard("수수료 제외 순매출", formatEok(latest.net), "수수료 " + formatWon(latest.gross - latest.net), null, "#8B5CF6", sparkNet);
   html += kpiCard("전월 대비", delta == null ? "—" : (delta > 0 ? "+" : "") + delta.toFixed(1) + "%", prev ? prev.month + " 대비" : "전월 데이터 없음", delta);
   html += kpiCard("최고 매출월", peak && peak.gross > 0 ? peak.month : "—", peak && peak.gross > 0 ? formatWon(peak.gross) : "데이터 없음", null, "#F59E0B");
@@ -474,7 +596,7 @@ function renderSales() {
 
   html += '<div class="grid-2">' +
     rankedListCard("채널별 매출 · " + latest.month, rankItems, formatWon) +
-    trendChartCard("월별 매출 추이", points, "#2DA8E0", formatEok) +
+    trendChartCard("월별 매출 추이", points, "#F65934", formatEok) +
     '</div>';
 
   html += '<div class="card section-card"><div class="section-head"><div class="section-title">채널별 수수료율</div></div>' +
@@ -517,18 +639,22 @@ function renderMarketing() {
   const sparkSpend = computed.map((r) => r.spendTotal);
   const sparkConv = computed.map((r) => r.conversions);
   const rankItems = channels.map((c) => ({ label: c.name, value: Number(latest.spend[c.id]) || 0, color: c.color }));
-  const points = computed.map((r) => ({ label: r.month.slice(2), value: r.spendTotal }));
+  const comboPoints = computed.map((r) => ({
+    label: r.month.slice(2),
+    bar: r.spendTotal,
+    line: r.spendTotal > 0 ? (r.revenue / r.spendTotal) * 100 : null
+  }));
 
   let html = '<div class="kpi-grid">';
-  html += kpiCard("이번 달 총 광고비", formatEok(latest.spendTotal), latest.month, null, "#2DA8E0", sparkSpend);
-  html += kpiCard("ROAS", roas == null ? "—" : roas.toFixed(0) + "%", "매출 ÷ 광고비 (직접입력 매출 기준)", null, "#8B5CF6");
+  html += kpiCard("이번 달 총 광고비", formatEok(latest.spendTotal), latest.month, null, "#F65934", sparkSpend);
+  html += kpiCard("ROAS", roas == null ? "—" : roas.toFixed(0) + "%", "매출 ÷ 광고비 (직접입력 매출 기준)", null, "#EBDABE");
   html += kpiCard("총 전환수", latest.conversions ? latest.conversions.toLocaleString("ko-KR") + "건" : "—", prev ? "전월 " + prev.conversions + "건" : "", null, "#22C55E", sparkConv);
   html += kpiCard("CPA", cpa == null ? "—" : formatWon(cpa), delta != null ? "광고비 전월 대비" : "전환수 입력 필요", delta);
   html += '</div>';
 
   html += '<div class="grid-2">' +
     rankedListCard("채널별 광고비 · " + latest.month, rankItems, formatWon) +
-    trendChartCard("월별 광고비 추이", points, "#2DA8E0", formatEok) +
+    comboChartCard("월별 광고비 vs ROAS", comboPoints, "#F65934", "#EBDABE", "광고비", "ROAS(%)") +
     '</div>';
 
   let tableInner = '<table class="data-table"><thead><tr><th>월</th>' +
@@ -566,16 +692,18 @@ function renderCrm() {
   const points = rows.map((r) => ({ label: r.month.slice(2), value: r.kakaoFriends }));
 
   let html = '<div class="kpi-grid">';
-  html += kpiCard("카카오톡 친구수", latest.kakaoFriends.toLocaleString("ko-KR") + "명", "목표 " + target.toLocaleString("ko-KR") + "명", delta, "#EAB308", sparkFriends);
-  html += kpiCard("목표 달성률", Math.min(achieveRate, 999).toFixed(0) + "%", "런칭 전 카카오 목표 대비", null, "#22C55E");
-  html += kpiCard("총 회원수", totalMembers.toLocaleString("ko-KR") + "명", "등급별 합계", null, "#8B5CF6");
-  html += kpiCard("최다 등급", topTier ? topTier.name : "—", topTier ? (Number(tierCounts[topTier.id]) || 0).toLocaleString("ko-KR") + "명" : "", null, "#10B981");
+  html += kpiCard("카카오톡 친구수", latest.kakaoFriends.toLocaleString("ko-KR") + "명", "목표 " + target.toLocaleString("ko-KR") + "명", delta, "#F65934", sparkFriends);
+  html += kpiCard("총 회원수", totalMembers.toLocaleString("ko-KR") + "명", "등급별 합계", null, "#EBDABE");
+  html += kpiCard("최다 등급", topTier ? topTier.name : "—", topTier ? (Number(tierCounts[topTier.id]) || 0).toLocaleString("ko-KR") + "명" : "", null, "#22C55E");
+  html += kpiCard("이번 달 신규가입", latest.newSignups.toLocaleString("ko-KR") + "명", prev ? "전월 " + prev.newSignups + "명" : "", null, "#8B5CF6");
   html += '</div>';
 
   html += '<div class="grid-2">' +
-    rankedListCard("등급별 회원 분포", tierItems, (v) => v.toLocaleString("ko-KR") + "명") +
-    trendChartCard("카카오톡 친구수 추이", points, "#EAB308", (v) => v.toLocaleString("ko-KR")) +
+    gaugeCard("카카오 목표 달성률", achieveRate, "#F65934", latest.kakaoFriends.toLocaleString("ko-KR") + " / " + target.toLocaleString("ko-KR") + "명") +
+    funnelCard("등급별 회원 분포 (Seed &#8594; Keeper)", tierItems) +
     '</div>';
+
+  html += trendChartCard("카카오톡 친구수 추이", points, "#F65934", (v) => v.toLocaleString("ko-KR"));
 
   html += '<div class="card section-card"><div class="section-head"><div class="section-title">등급별 회원수 (현재 스냅샷)</div></div>' +
     commissionGrid("crm-tier", tiers.map((t) => ({ id: t.id, name: t.name, color: t.color, value: tierCounts[t.id] })), null, "명") +
@@ -608,7 +736,7 @@ function renderAnalytics() {
   const points = rows.map((r) => ({ label: r.month.slice(2), value: r.sessions }));
 
   let html = '<div class="kpi-grid">';
-  html += kpiCard("이번 달 총 세션", latest.sessions.toLocaleString("ko-KR"), latest.month, delta, "#2DA8E0", sparkSessions);
+  html += kpiCard("이번 달 총 세션", latest.sessions.toLocaleString("ko-KR"), latest.month, delta, "#F65934", sparkSessions);
   html += kpiCard("평균 체류시간", latest.avgDuration + "초", prev ? "전월 " + prev.avgDuration + "초" : "", null, "#8B5CF6");
   html += kpiCard("전환율", latest.conversionRate + "%", prev ? "전월 " + prev.conversionRate + "%" : "", null, "#22C55E");
   html += kpiCard("이탈률", latest.bounceRate + "%", prev ? "전월 " + prev.bounceRate + "%" : "", null, "#EF4444");
@@ -619,7 +747,7 @@ function renderAnalytics() {
     rankedListCard("유입 채널별 세션", channelItems, (v) => v.toLocaleString("ko-KR")) +
     '</div>';
 
-  html += trendChartCard("월별 세션 추이", points, "#2DA8E0", (v) => v.toLocaleString("ko-KR"));
+  html += trendChartCard("월별 세션 추이", points, "#F65934", (v) => v.toLocaleString("ko-KR"));
 
   html += '<div class="card section-card"><div class="section-head"><div class="section-title">채널 / 디바이스 세션 스냅샷 (' + latest.month + ')</div></div>' +
     commissionGrid("an-channel", channels.map((c) => ({ id: c.id, name: c.name, color: c.color, value: channelSessions[c.id] })), null, "") +
@@ -641,12 +769,124 @@ function renderAnalytics() {
   return html;
 }
 
+/* ---------------- tab: Overview (종합 현황) ---------------- */
+function renderOverview() {
+  const s = computeSales();
+  const m = computeMarketing();
+  const crmRows = state.crm.rows;
+  const crmLatest = crmRows[crmRows.length - 1];
+  const crmAchieve = (crmLatest.kakaoFriends / state.crm.target) * 100;
+  const anRows = state.analytics.rows;
+  const anLatest = anRows[anRows.length - 1];
+
+  let html = '<div class="overview-mini-grid">';
+  html += kpiCard("이번 달 매출", formatEok(s.latest.gross), s.latest.month, s.delta, "#F65934", s.computed.map((r) => r.gross));
+  html += kpiCard("이번 달 광고비", formatEok(m.latest.spendTotal), m.latest.month, m.delta, "#EBDABE", m.computed.map((r) => r.spendTotal));
+  html += kpiCard("카카오톡 친구수", crmLatest.kakaoFriends.toLocaleString("ko-KR") + "명", "목표 " + state.crm.target.toLocaleString("ko-KR") + "명", null, "#22C55E", crmRows.map((r) => r.kakaoFriends));
+  html += kpiCard("이번 달 세션", anLatest.sessions.toLocaleString("ko-KR"), anLatest.month, null, "#8B5CF6", anRows.map((r) => r.sessions));
+  html += '</div>';
+
+  html += '<div class="grid-2">' +
+    trendChartCard("매출 추이 (전체 기간)", s.computed.map((r) => ({ label: r.month.slice(2), value: r.gross })), "#F65934", formatEok) +
+    gaugeCard("런칭 준비 진행률", roadmapProgress(), "#F65934", roadmapProgressSub()) +
+    '</div>';
+
+  const rankItems = s.channels.map((c) => ({ label: c.name, value: Number(s.latest.amounts[c.id]) || 0, color: c.color }));
+  html += '<div class="grid-2">' +
+    rankedListCard("채널별 매출 · " + s.latest.month, rankItems, formatWon) +
+    funnelCard("CRM 등급 분포", state.crm.tiers.map((t) => ({ label: t.name, value: Number(state.crm.tierCounts[t.id]) || 0, color: t.color }))) +
+    '</div>';
+
+  html += '<div class="card section-card"><div class="section-head"><div class="section-title">다가오는 마일스톤</div></div>' +
+    upcomingMilestonesHtml() + '</div>';
+
+  return html;
+}
+
+function roadmapProgress() {
+  const ms = state.roadmap.milestones;
+  if (!ms.length) return 0;
+  const done = ms.filter((m) => m.status === "완료").length;
+  return (done / ms.length) * 100;
+}
+function roadmapProgressSub() {
+  const ms = state.roadmap.milestones;
+  const done = ms.filter((m) => m.status === "완료").length;
+  return done + " / " + ms.length + " 완료";
+}
+function upcomingMilestonesHtml() {
+  const ms = state.roadmap.milestones.filter((m) => m.status !== "완료").slice(0, 4);
+  if (!ms.length) return '<div class="empty">모든 마일스톤이 완료되었습니다 🎉</div>';
+  return ms.map((m) => {
+    const color = m.status === "진행중" ? "#F65934" : "#8A8272";
+    return '<div class="milestone-row"><span class="status-badge" style="background:' + color + '"></span>' +
+      '<span class="milestone-title">' + m.title + '</span>' +
+      '<span class="milestone-cat">' + m.category + '</span>' +
+      '<span class="milestone-due mono">' + m.due + '</span>' +
+      '<span style="font-size:11px;color:var(--ink-soft);width:50px;text-align:right;">' + m.status + '</span></div>';
+  }).join("");
+}
+
+/* ---------------- tab: 로드맵 ---------------- */
+function renderRoadmap() {
+  const ms = state.roadmap.milestones;
+  const done = ms.filter((m) => m.status === "완료").length;
+  const inProgress = ms.filter((m) => m.status === "진행중").length;
+  const upcoming = ms.filter((m) => m.status === "예정").length;
+  const progress = ms.length ? (done / ms.length) * 100 : 0;
+
+  let html = '<div class="kpi-grid">';
+  html += kpiCard("전체 진행률", Math.round(progress) + "%", done + " / " + ms.length + " 완료", null, "#F65934");
+  html += kpiCard("진행중", inProgress + "건", "", null, "#EBDABE");
+  html += kpiCard("예정", upcoming + "건", "", null, "#8B5CF6");
+  html += kpiCard("완료", done + "건", "", null, "#22C55E");
+  html += '</div>';
+
+  html += '<div class="grid-2">' +
+    gaugeCard("런칭 준비 진행률", progress, "#F65934", done + " / " + ms.length + " 완료") +
+    '<div class="card section-card"><div class="section-head"><div class="section-title">카테고리별 항목 수</div></div>' +
+    (function () {
+      const cats = {};
+      ms.forEach((m) => { cats[m.category] = (cats[m.category] || 0) + 1; });
+      const items = Object.keys(cats).map((k, i) => ({ label: k, value: cats[k], color: GRAD6[i % GRAD6.length] }));
+      return '<div class="ranked-list">' + items.map((it, i) => {
+        const max = Math.max(1, ...items.map((x) => x.value));
+        return '<div class="ranked-row"><span class="ranked-num">' + (i + 1) + '</span>' +
+          '<span class="ranked-label">' + it.label + '</span>' +
+          '<div class="ranked-bar-wrap"><div class="ranked-bar" style="width:' + ((it.value / max) * 100).toFixed(1) + '%;background:' + it.color + '"></div></div>' +
+          '<span class="ranked-value mono">' + it.value + '건</span></div>';
+      }).join("") + '</div>';
+    })() +
+    '</div></div>';
+
+  html += '<div class="card section-card"><div class="section-head"><div class="section-title">마일스톤 목록</div>' +
+    '<button class="btn accent" data-action="rm-add">+ 항목 추가</button></div>';
+  html += ms.map((m) => {
+    const color = m.status === "완료" ? "#22C55E" : m.status === "진행중" ? "#F65934" : "#8A8272";
+    return '<div class="milestone-row">' +
+      '<span class="status-badge" style="background:' + color + '"></span>' +
+      '<input type="text" class="milestone-title" style="background:transparent;border:none;color:var(--ink);font-size:12.5px;" value="' + m.title + '" data-action="rm-title" data-row="' + m.id + '">' +
+      '<input type="text" class="milestone-cat mono" style="background:transparent;border:1px solid var(--line);border-radius:5px;padding:2px 6px;" value="' + m.category + '" data-action="rm-cat" data-row="' + m.id + '">' +
+      '<input type="month" class="milestone-due mono" style="background:transparent;border:1px solid var(--line);border-radius:5px;padding:2px 6px;" value="' + m.due + '" data-action="rm-due" data-row="' + m.id + '">' +
+      '<select class="status-select" data-action="rm-status" data-row="' + m.id + '">' +
+      ["예정", "진행중", "완료"].map((s) => '<option value="' + s + '"' + (s === m.status ? " selected" : "") + '>' + s + '</option>').join("") +
+      '</select>' +
+      '<button class="del-btn" data-action="rm-remove" data-row="' + m.id + '">&#128465;</button>' +
+      '</div>';
+  }).join("");
+  html += '</div>';
+
+  return html;
+}
+
 /* ---------------- nav + render dispatch ---------------- */
 const NAV = [
+  { id: "overview", label: "종합 현황" },
   { id: "sales", label: "매출" },
   { id: "marketing", label: "마케팅" },
   { id: "crm", label: "CRM" },
-  { id: "analytics", label: "분석" }
+  { id: "analytics", label: "분석" },
+  { id: "roadmap", label: "로드맵" }
 ];
 
 function renderNav() {
@@ -660,10 +900,12 @@ function renderNav() {
 function render() {
   renderNav();
   const content = document.getElementById("tab-content");
-  if (ui.tab === "sales") content.innerHTML = renderSales();
+  if (ui.tab === "overview") content.innerHTML = renderOverview();
+  else if (ui.tab === "sales") content.innerHTML = renderSales();
   else if (ui.tab === "marketing") content.innerHTML = renderMarketing();
   else if (ui.tab === "crm") content.innerHTML = renderCrm();
   else if (ui.tab === "analytics") content.innerHTML = renderAnalytics();
+  else if (ui.tab === "roadmap") content.innerHTML = renderRoadmap();
 }
 
 /* ---------------- event handling ---------------- */
@@ -704,6 +946,12 @@ document.addEventListener("click", (e) => {
     persist(); render(); return;
   }
   if (action === "an-remove") { state.analytics.rows = state.analytics.rows.filter((r) => r.id !== el.dataset.row); persist(); render(); return; }
+
+  if (action === "rm-add") {
+    state.roadmap.milestones.push({ id: "rm" + Date.now(), title: "새 항목", category: "기타", status: "예정", due: nextMonth(state.roadmap.milestones.length ? state.roadmap.milestones[state.roadmap.milestones.length - 1].due : "2026-08") });
+    persist(); render(); return;
+  }
+  if (action === "rm-remove") { state.roadmap.milestones = state.roadmap.milestones.filter((r) => r.id !== el.dataset.row); persist(); render(); return; }
 });
 
 document.getElementById("reset-btn").addEventListener("click", () => {
@@ -718,7 +966,7 @@ document.addEventListener("change", (e) => {
   const action = el.dataset.action;
   if (!action) return;
   const row = el.dataset.row, ch = el.dataset.ch, id = el.dataset.id;
-  const val = el.type === "month" ? el.value : (el.value === "" ? 0 : Number(el.value));
+  const val = el.type === "number" ? (el.value === "" ? 0 : Number(el.value)) : el.value;
 
   const findRow = (arr) => arr.find((r) => r.id === row);
 
@@ -743,6 +991,11 @@ document.addEventListener("change", (e) => {
   else if (action === "an-duration") findRow(state.analytics.rows).avgDuration = val;
   else if (action === "an-channel") state.analytics.channelSessions[id] = val;
   else if (action === "an-device") state.analytics.deviceSessions[id] = val;
+
+  else if (action === "rm-title") { const m = state.roadmap.milestones.find((x) => x.id === row); m.title = el.value; }
+  else if (action === "rm-cat") { const m = state.roadmap.milestones.find((x) => x.id === row); m.category = el.value; }
+  else if (action === "rm-due") { const m = state.roadmap.milestones.find((x) => x.id === row); m.due = el.value; }
+  else if (action === "rm-status") { const m = state.roadmap.milestones.find((x) => x.id === row); m.status = el.value; }
   else return;
 
   persist();
