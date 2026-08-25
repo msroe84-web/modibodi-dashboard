@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>모디보디 코리아 · Business Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --sidebar-bg: #101B2D;
+    --sidebar-text: #93A0B8;
+    --sidebar-active: rgba(255,255,255,0.08);
+    --bg: #F2F4F8;
+    --surface: #FFFFFF;
+    --ink: #1F2733;
+    --ink-soft: #6B7686;
+    --ink-faint: #9AA3B2;
+    --line: #E7EAF0;
+    --accent: #2DA8E0;
+    --pos: #1FA35A;
+    --neg: #E0473F;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+  }
+  .mono { font-family: 'IBM Plex Mono', monospace; font-variant-numeric: tabular-nums; }
+
+  .root { display: flex; min-height: 100vh; }
+
+  .sidebar { width: 176px; flex-shrink: 0; background: var(--sidebar-bg); padding: 20px 12px; }
+  .sidebar-title { font-family: 'Space Grotesk', sans-serif; color: white; font-size: 14px; font-weight: 700; padding: 0 8px 4px; }
+  .sidebar-sub { color: var(--sidebar-text); font-size: 10px; padding: 0 8px 18px; }
+  .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 8px; color: var(--sidebar-text); font-size: 13px; font-weight: 500; cursor: pointer; margin-bottom: 3px; user-select: none; }
+  .nav-item:hover { background: rgba(255,255,255,0.05); color: white; }
+  .nav-item.active { background: var(--sidebar-active); color: white; }
+  .nav-item .dot { width: 5px; height: 5px; border-radius: 50%; margin-left: auto; background: transparent; }
+  .nav-item.active .dot { background: var(--accent); }
+
+  .main { flex: 1; padding: 24px 28px 60px; min-width: 0; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .topbar-title { font-size: 19px; font-weight: 700; }
+  .topbar-sub { font-size: 12px; color: var(--ink-soft); margin-top: 3px; }
+  .save-pill { font-size: 11px; color: var(--ink-faint); display: flex; align-items: center; gap: 6px; }
+  .save-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pos); }
+  .refresh-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink-soft); display: flex; align-items: center; justify-content: center; cursor: pointer; margin-left: 12px; font-size: 14px; }
+  .refresh-btn:hover { color: var(--ink); }
+
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
+  .kpi-card { padding: 15px 16px; }
+  .kpi-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .kpi-label { font-size: 11px; color: var(--ink-soft); margin-bottom: 6px; }
+  .kpi-value { font-size: 19px; font-weight: 700; }
+  .kpi-bottom { margin-top: 8px; display: flex; align-items: center; gap: 8px; }
+  .kpi-delta { font-size: 12px; font-weight: 600; }
+  .kpi-sub { font-size: 11px; color: var(--ink-faint); }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1.3fr; gap: 14px; margin-bottom: 14px; }
+
+  .section-card { margin-bottom: 14px; overflow: hidden; }
+  .section-head { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px; border-bottom: 1px solid var(--line); }
+  .section-title { font-size: 13px; font-weight: 600; }
+
+  .ranked-list { padding: 6px 16px 14px; }
+  .ranked-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; font-size: 12px; }
+  .ranked-num { width: 14px; color: var(--ink-faint); font-size: 11px; }
+  .ranked-label { width: 92px; flex-shrink: 0; }
+  .ranked-bar-wrap { flex: 1; background: #F0F2F6; border-radius: 4px; height: 8px; overflow: hidden; }
+  .ranked-bar { height: 100%; border-radius: 4px; }
+  .ranked-value { width: 80px; text-align: right; color: var(--ink-soft); flex-shrink: 0; }
+
+  .legend-row { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 10px; }
+  .legend-item { font-size: 11px; color: var(--ink-soft); display: flex; align-items: center; gap: 5px; }
+  .legend-val { color: var(--ink); font-weight: 600; }
+  .swatch { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
+  .empty { padding: 30px 0; font-size: 12px; color: var(--ink-faint); text-align: center; }
+
+  .btn { border: 1px solid var(--line); background: var(--surface); border-radius: 7px; padding: 6px 11px; font-size: 12px; font-weight: 500; color: var(--ink); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
+  .btn:hover { background: #F5F6F8; }
+  .btn.accent { background: var(--accent); border: none; color: white; }
+  .btn.accent:hover { opacity: 0.9; }
+
+  .commission-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; padding: 14px 16px; }
+  .commission-item { border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; }
+  .commission-name { font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+  .commission-item input { width: 64px; border: 1px solid var(--line); border-radius: 5px; padding: 3px 6px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+  .unit { font-size: 11px; color: var(--ink-soft); margin-left: 4px; }
+
+  .table-wrap { overflow-x: auto; }
+  table.data-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  table.data-table th, table.data-table td { padding: 9px 11px; text-align: right; white-space: nowrap; }
+  table.data-table th:first-child, table.data-table td:first-child { text-align: left; }
+  table.data-table thead th { font-size: 10.5px; color: var(--ink-soft); font-weight: 500; border-bottom: 1px solid var(--line); }
+  table.data-table tbody tr:not(:last-child) td { border-bottom: 1px solid var(--line); }
+  table.data-table input { width: 90px; border: none; background: transparent; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; padding: 3px 2px; border-radius: 5px; }
+  table.data-table input[type="month"] { text-align: left; font-family: inherit; width: 110px; }
+  table.data-table input:focus { outline: 2px solid var(--accent); background: #EAF6FD; }
+  .strong { font-weight: 700; }
+  .muted { color: var(--ink-soft); }
+  .del-btn { background: none; border: none; color: var(--ink-faint); cursor: pointer; padding: 4px; font-size: 14px; }
+  .del-btn:hover { color: var(--neg); }
+
+  .chevron { color: #9CA3AF; font-size: 11px; }
+
+  @media (max-width: 900px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="root">
+  <div class="sidebar">
+    <div class="sidebar-title">모디보디 코리아</div>
+    <div class="sidebar-sub">Business Dashboard</div>
+    <div id="nav"></div>
+  </div>
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title" id="topbar-title"></div>
+        <div class="topbar-sub">데이터를 입력하면 지표가 자동으로 계산됩니다</div>
+      </div>
+      <div style="display:flex;align-items:center;">
+        <div class="save-pill"><span class="save-dot" id="save-dot"></span><span id="save-text">자동 저장됨</span></div>
+        <button class="refresh-btn" id="reset-btn" title="기본값으로 초기화">&#8635;</button>
+      </div>
+    </div>
+    <div id="tab-content"></div>
+  </div>
+</div>
+
+<script>
+/* ---------------- 구글시트 연동 설정 (여기 두 값만 채우면 됩니다) ---------------- */
+// Apps Script 배포 후 나온 웹 앱 URL을 붙여넣으세요 (https://script.google.com/macros/s/xxxx/exec)
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx3ILS_u6RlaypjvAIrhC-33nW7bp-FKgzwn_6Rhjim_VY8yI8SFHZppPQkPDYNE9QE8g/exec";
+// Apps Script 코드에 설정한 SECRET 값과 동일하게 맞추세요
+const SECRET_TOKEN = "modibodi2026";
+
+/* ---------------- storage ---------------- */
+const STORAGE_KEY = "biz-dashboard-local-v1"; // 오프라인 캐시용 (구글시트 연동 실패 시 대비)
+const CONFIGURED = APPS_SCRIPT_URL.indexOf("http") === 0;
+
+function defaultState() {
+  return {
+    sales: {
+      channels: [
+        { id: "cafe24", name: "카페24", color: "#2DA8E0", commission: 3.5 },
+        { id: "smartstore", name: "스마트스토어", color: "#8B5CF6", commission: 3.63 },
+        { id: "29cm", name: "29CM", color: "#F59E0B", commission: 0 },
+        { id: "musinsa", name: "무신사", color: "#22C55E", commission: 0 },
+        { id: "kakao", name: "카카오선물", color: "#EAB308", commission: 0 },
+        { id: "wconcept", name: "W컨셉", color: "#EF4444", commission: 0 }
+      ],
+      rows: [
+        { id: "s1", month: "2026-06", amounts: { cafe24: 0, smartstore: 0, "29cm": 0, musinsa: 0, kakao: 0, wconcept: 0 } },
+        { id: "s2", month: "2026-07", amounts: { cafe24: 0, smartstore: 0, "29cm": 0, musinsa: 0, kakao: 0, wconcept: 0 } },
+        { id: "s3", month: "2026-08", amounts: { cafe24: 437800, smartstore: 0, "29cm": 0, musinsa: 0, kakao: 0, wconcept: 0 } }
+      ]
+    },
+    marketing: {
+      channels: [
+        { id: "meta", name: "Meta", color: "#2DA8E0" },
+        { id: "naver", name: "네이버", color: "#22C55E" },
+        { id: "google", name: "구글", color: "#F59E0B" },
+        { id: "tiktok", name: "틱톡", color: "#EC4899" },
+        { id: "retargeting", name: "리타겟팅", color: "#8B5CF6" }
+      ],
+      rows: [
+        { id: "m1", month: "2026-06", spend: { meta: 0, naver: 0, google: 0, tiktok: 0, retargeting: 0 }, conversions: 0, revenue: 0 },
+        { id: "m2", month: "2026-07", spend: { meta: 0, naver: 0, google: 0, tiktok: 0, retargeting: 0 }, conversions: 0, revenue: 0 },
+        { id: "m3", month: "2026-08", spend: { meta: 0, naver: 0, google: 0, tiktok: 0, retargeting: 0 }, conversions: 0, revenue: 0 }
+      ]
+    },
+    crm: {
+      tiers: [
+        { id: "seed", name: "Seed", color: "#A7F3D0" },
+        { id: "root", name: "Root", color: "#6EE7B7" },
+        { id: "bloom", name: "Bloom", color: "#34D399" },
+        { id: "canopy", name: "Canopy", color: "#10B981" },
+        { id: "keeper", name: "Keeper", color: "#047857" }
+      ],
+      rows: [
+        { id: "c1", month: "2026-06", kakaoFriends: 0, newSignups: 0 },
+        { id: "c2", month: "2026-07", kakaoFriends: 0, newSignups: 0 },
+        { id: "c3", month: "2026-08", kakaoFriends: 0, newSignups: 0 }
+      ],
+      tierCounts: { seed: 0, root: 0, bloom: 0, canopy: 0, keeper: 0 },
+      target: 1000
+    },
+    analytics: {
+      channels: [
+        { id: "social", name: "소셜", color: "#2DA8E0" },
+        { id: "direct", name: "다이렉트", color: "#0EA5E9" },
+        { id: "organic", name: "오가닉 검색", color: "#22C55E" },
+        { id: "referral", name: "레퍼럴", color: "#F59E0B" },
+        { id: "paid", name: "유료검색", color: "#EF4444" },
+        { id: "display", name: "디스플레이", color: "#8B5CF6" }
+      ],
+      devices: [
+        { id: "desktop", name: "데스크탑", color: "#2DA8E0" },
+        { id: "mobile", name: "모바일", color: "#F59E0B" },
+        { id: "tablet", name: "태블릿", color: "#8B5CF6" }
+      ],
+      rows: [
+        { id: "a1", month: "2026-06", sessions: 0, conversionRate: 0, bounceRate: 0, avgDuration: 0 },
+        { id: "a2", month: "2026-07", sessions: 0, conversionRate: 0, bounceRate: 0, avgDuration: 0 },
+        { id: "a3", month: "2026-08", sessions: 0, conversionRate: 0, bounceRate: 0, avgDuration: 0 }
+      ],
+      channelSessions: { social: 0, direct: 0, organic: 0, referral: 0, paid: 0, display: 0 },
+      deviceSessions: { desktop: 0, mobile: 0, tablet: 0 }
+    }
+  };
+}
+
+function loadLocalCache() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    return null;
+  }
+}
+function saveLocalCache(s) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch (e) {}
+}
+
+let state = loadLocalCache() || defaultState();
+let ui = { tab: "sales", tableOpen: {}, settingsOpen: {} };
+let saveTimer = null;
+
+function setSaveStatus(mode) {
+  const dot = document.getElementById("save-dot");
+  const text = document.getElementById("save-text");
+  if (mode === "loading") { dot.style.background = "#F59E0B"; text.textContent = "구글시트에서 불러오는 중"; }
+  else if (mode === "saving") { dot.style.background = "#F59E0B"; text.textContent = "저장 중"; }
+  else if (mode === "saved") { dot.style.background = "var(--pos)"; text.textContent = "구글시트에 저장됨"; }
+  else if (mode === "offline") { dot.style.background = "var(--ink-faint)"; text.textContent = "이 브라우저에만 저장됨 (연동 미설정)"; }
+  else if (mode === "error") { dot.style.background = "var(--neg)"; text.textContent = "저장 실패 - 연결 확인 필요"; }
+}
+
+async function fetchRemoteState() {
+  const res = await fetch(APPS_SCRIPT_URL + "?token=" + encodeURIComponent(SECRET_TOKEN));
+  const json = await res.json();
+  if (json.error) throw new Error(json.error);
+  return json.data;
+}
+
+async function pushRemoteState(s) {
+  const res = await fetch(APPS_SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" }, // CORS 프리플라이트 회피용
+    body: JSON.stringify({ token: SECRET_TOKEN, data: s })
+  });
+  const json = await res.json();
+  if (json.error) throw new Error(json.error);
+}
+
+async function initState() {
+  if (!CONFIGURED) {
+    setSaveStatus("offline");
+    render();
+    return;
+  }
+  setSaveStatus("loading");
+  try {
+    const remote = await fetchRemoteState();
+    if (remote) { state = remote; saveLocalCache(state); }
+    else { await pushRemoteState(state); } // 시트가 비어있으면 기본값을 최초 1회 업로드
+    setSaveStatus("saved");
+  } catch (e) {
+    console.error(e);
+    setSaveStatus("error");
+  }
+  render();
+}
+
+function persist() {
+  saveLocalCache(state);
+  if (!CONFIGURED) { setSaveStatus("offline"); return; }
+  setSaveStatus("saving");
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(async () => {
+    try {
+      await pushRemoteState(state);
+      setSaveStatus("saved");
+    } catch (e) {
+      console.error(e);
+      setSaveStatus("error");
+    }
+  }, 700);
+}
+
+/* ---------------- helpers ---------------- */
+function formatWon(n) { return Math.round(n || 0).toLocaleString("ko-KR") + "원"; }
+function formatEok(n) {
+  const v = n || 0;
+  if (Math.abs(v) >= 100000000) return (v / 100000000).toFixed(2) + "억원";
+  if (Math.abs(v) >= 10000) return (v / 10000).toFixed(0) + "만원";
+  return v.toLocaleString("ko-KR") + "원";
+}
+function nextMonth(m) {
+  const [y, mo] = m.split("-").map(Number);
+  const d = new Date(y, mo - 1 + 1, 1);
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+}
+function esc(s) { return String(s); }
+function deltaColor(v) { return v > 0 ? "var(--pos)" : v < 0 ? "var(--neg)" : "var(--ink-soft)"; }
+function deltaArrow(v) { return v > 0 ? "&#9650;" : v < 0 ? "&#9660;" : "&#8212;"; }
+
+/* ---------------- svg chart builders ---------------- */
+function sparklineSVG(values, color) {
+  if (!values.length) values = [0, 0];
+  const w = 72, h = 32;
+  const max = Math.max(...values, 1), min = Math.min(...values, 0);
+  const range = (max - min) || 1;
+  const step = w / Math.max(values.length - 1, 1);
+  const pts = values.map((v, i) => (i * step).toFixed(1) + "," + (h - ((v - min) / range) * h).toFixed(1)).join(" ");
+  const area = "0," + h + " " + pts + " " + w + "," + h;
+  return '<svg width="72" height="32" viewBox="0 0 ' + w + ' ' + h + '">' +
+    '<polyline points="' + area + '" fill="' + color + '22" stroke="none"/>' +
+    '<polyline points="' + pts + '" fill="none" stroke="' + color + '" stroke-width="1.6"/>' +
+    '</svg>';
+}
+
+function trendChartSVG(points, color, formatter) {
+  const w = 640, h = 190, pad = 28;
+  const values = points.map((p) => p.value);
+  const max = Math.max(...values, 1);
+  const step = (w - pad) / Math.max(points.length - 1, 1);
+  const pts = values.map((v, i) => (pad + i * step).toFixed(1) + "," + (h - 30 - (v / max) * (h - 50)).toFixed(1)).join(" ");
+  const area = pad + "," + (h - 30) + " " + pts + " " + (pad + (points.length - 1) * step) + "," + (h - 30);
+  const labels = points.map((p, i) =>
+    '<text x="' + (pad + i * step).toFixed(1) + '" y="' + (h - 8) + '" font-size="10" fill="#9CA3AF" text-anchor="middle">' + p.label + '</text>'
+  ).join("");
+  const gridLines = [0.25, 0.5, 0.75, 1].map((f) =>
+    '<line x1="' + pad + '" x2="' + w + '" y1="' + (h - 30 - f * (h - 50)) + '" y2="' + (h - 30 - f * (h - 50)) + '" stroke="#EEF0F3" stroke-width="1"/>'
+  ).join("");
+  return '<svg viewBox="0 0 ' + w + ' ' + h + '" width="100%" height="230" preserveAspectRatio="none">' +
+    gridLines +
+    '<polyline points="' + area + '" fill="' + color + '30" stroke="none"/>' +
+    '<polyline points="' + pts + '" fill="none" stroke="' + color + '" stroke-width="2.2"/>' +
+    labels +
+    '</svg>';
+}
+
+function donutSVG(items) {
+  const total = items.reduce((s, i) => s + i.value, 0);
+  if (total <= 0) return null;
+  const r = 62, cx = 84, cy = 84, sw = 22;
+  const circ = 2 * Math.PI * r;
+  let offset = 0;
+  const circles = items.filter((i) => i.value > 0).map((i) => {
+    const frac = i.value / total;
+    const dash = frac * circ;
+    const el = '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="' + i.color + '" stroke-width="' + sw + '" ' +
+      'stroke-dasharray="' + dash.toFixed(1) + ' ' + (circ - dash).toFixed(1) + '" stroke-dashoffset="' + (-offset).toFixed(1) + '" ' +
+      'transform="rotate(-90 ' + cx + ' ' + cy + ')"/>';
+    offset += dash;
+    return el;
+  }).join("");
+  return '<svg width="168" height="168" viewBox="0 0 168 168">' + circles + '</svg>';
+}
+
+/* ---------------- reusable HTML block builders ---------------- */
+function kpiCard(label, value, sub, deltaPct, color, sparkValues) {
+  const spark = sparkValues ? sparklineSVG(sparkValues, color || "#2DA8E0") : "";
+  const deltaHtml = deltaPct != null
+    ? '<span class="kpi-delta" style="color:' + deltaColor(deltaPct) + '">' + deltaArrow(deltaPct) + ' ' + (deltaPct > 0 ? "+" : "") + deltaPct.toFixed(1) + '%</span>'
+    : "";
+  return '<div class="card kpi-card">' +
+    '<div class="kpi-top"><div><div class="kpi-label">' + label + '</div><div class="kpi-value mono">' + value + '</div></div>' + spark + '</div>' +
+    '<div class="kpi-bottom">' + deltaHtml + (sub ? '<span class="kpi-sub">' + sub + '</span>' : "") + '</div>' +
+    '</div>';
+}
+
+function rankedListCard(title, items, formatter) {
+  const max = Math.max(1, ...items.map((i) => i.value));
+  const sorted = items.slice().sort((a, b) => b.value - a.value);
+  const rows = sorted.length === 0 ? '<div class="empty">데이터를 입력하면 순위가 표시됩니다</div>' :
+    sorted.map((it, i) =>
+      '<div class="ranked-row"><span class="ranked-num">' + (i + 1) + '</span>' +
+      '<span class="ranked-label">' + it.label + '</span>' +
+      '<div class="ranked-bar-wrap"><div class="ranked-bar" style="width:' + ((it.value / max) * 100).toFixed(1) + '%;background:' + it.color + '"></div></div>' +
+      '<span class="ranked-value mono">' + formatter(it.value) + '</span></div>'
+    ).join("");
+  return '<div class="card section-card"><div class="section-head"><div class="section-title">' + title + '</div></div>' +
+    '<div class="ranked-list">' + rows + '</div></div>';
+}
+
+function donutCardHtml(title, items, centerLabel) {
+  const total = items.reduce((s, i) => s + i.value, 0);
+  const svg = donutSVG(items);
+  let body;
+  if (!svg) {
+    body = '<div class="empty">데이터를 입력하면 비중이 표시됩니다</div>';
+  } else {
+    const legend = items.filter((i) => i.value > 0).map((i) =>
+      '<div class="legend-item"><span class="swatch" style="background:' + i.color + '"></span>' + i.name +
+      ' <span class="legend-val mono">' + ((i.value / total) * 100).toFixed(0) + '%</span></div>'
+    ).join("");
+    body = '<div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;">' +
+      '<div style="position:relative;">' + svg +
+      '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">' +
+      '<div class="mono" style="font-size:13px;font-weight:700;">' + total.toLocaleString("ko-KR") + '</div>' +
+      '<div style="font-size:10px;color:var(--ink-faint);">' + (centerLabel || "합계") + '</div></div></div>' +
+      '<div class="legend-row" style="margin-top:0;">' + legend + '</div></div>';
+  }
+  return '<div class="card section-card"><div class="section-head"><div class="section-title">' + title + '</div></div>' +
+    '<div style="padding:14px 16px 18px;">' + body + '</div></div>';
+}
+
+function trendChartCard(title, points, color, formatter) {
+  return '<div class="card section-card"><div class="section-head"><div class="section-title">' + title + '</div></div>' +
+    '<div style="padding:8px 16px 4px;">' + trendChartSVG(points, color, formatter) + '</div></div>';
+}
+
+function collapsibleTable(id, title, innerHtml, addBtnAction) {
+  const open = !!ui.tableOpen[id];
+  return '<div class="card section-card">' +
+    '<div class="section-head" style="cursor:pointer" data-action="toggle-table" data-table-id="' + id + '">' +
+    '<div class="section-title">' + title + '</div>' +
+    '<div style="display:flex;align-items:center;gap:10px;">' +
+    '<button class="btn accent" data-action="' + addBtnAction + '" onclick="event.stopPropagation()">+ 월 추가</button>' +
+    '<span class="chevron">' + (open ? "&#9650;" : "&#9660;") + '</span>' +
+    '</div></div>' +
+    (open ? '<div class="table-wrap">' + innerHtml + '</div>' : "") +
+    '</div>';
+}
+
+function commissionGrid(id, items, key, unit) {
+  return '<div class="commission-grid">' + items.map((it) =>
+    '<div class="commission-item"><div class="commission-name"><span class="swatch" style="background:' + it.color + '"></span>' + it.name + '</div>' +
+    '<input type="number" step="0.01" value="' + it.value + '" data-action="' + id + '" data-id="' + it.id + '">' +
+    (unit ? '<span class="unit">' + unit + '</span>' : "") + '</div>'
+  ).join("") + '</div>';
+}
+
+/* ---------------- tab: 매출 ---------------- */
+function computeSales() {
+  const { channels, rows } = state.sales;
+  const computed = rows.map((r) => {
+    const gross = channels.reduce((s, c) => s + (Number(r.amounts[c.id]) || 0), 0);
+    const net = channels.reduce((s, c) => s + (Number(r.amounts[c.id]) || 0) * (1 - (Number(c.commission) || 0) / 100), 0);
+    return Object.assign({}, r, { gross: gross, net: net });
+  });
+  let latestIdx = computed.length - 1;
+  for (let i = computed.length - 1; i >= 0; i--) if (computed[i].gross > 0) { latestIdx = i; break; }
+  const latest = computed[latestIdx];
+  const prev = latestIdx > 0 ? computed[latestIdx - 1] : null;
+  const delta = prev && prev.gross > 0 ? ((latest.gross - prev.gross) / prev.gross) * 100 : null;
+  const peak = computed.reduce((b, r) => (!b || r.gross > b.gross ? r : b), null);
+  return { channels, rows, computed, latest, prev, delta, peak };
+}
+
+function renderSales() {
+  const { channels, computed, latest, prev, delta, peak } = computeSales();
+  const sparkGross = computed.map((r) => r.gross);
+  const sparkNet = computed.map((r) => r.net);
+  const rankItems = channels.map((c) => ({ label: c.name, value: Number(latest.amounts[c.id]) || 0, color: c.color }));
+  const points = computed.map((r) => ({ label: r.month.slice(2), value: r.gross }));
+
+  let html = '<div class="kpi-grid">';
+  html += kpiCard("이번 달 총 매출", formatEok(latest.gross), latest.month, null, "#2DA8E0", sparkGross);
+  html += kpiCard("수수료 제외 순매출", formatEok(latest.net), "수수료 " + formatWon(latest.gross - latest.net), null, "#8B5CF6", sparkNet);
+  html += kpiCard("전월 대비", delta == null ? "—" : (delta > 0 ? "+" : "") + delta.toFixed(1) + "%", prev ? prev.month + " 대비" : "전월 데이터 없음", delta);
+  html += kpiCard("최고 매출월", peak && peak.gross > 0 ? peak.month : "—", peak && peak.gross > 0 ? formatWon(peak.gross) : "데이터 없음", null, "#F59E0B");
+  html += '</div>';
+
+  html += '<div class="grid-2">' +
+    rankedListCard("채널별 매출 · " + latest.month, rankItems, formatWon) +
+    trendChartCard("월별 매출 추이", points, "#2DA8E0", formatEok) +
+    '</div>';
+
+  html += '<div class="card section-card"><div class="section-head"><div class="section-title">채널별 수수료율</div></div>' +
+    commissionGrid("sales-commission", channels.map((c) => ({ id: c.id, name: c.name, color: c.color, value: c.commission })), null, "%") +
+    '</div>';
+
+  let tableInner = '<table class="data-table"><thead><tr><th>월</th>' +
+    channels.map((c) => '<th>' + c.name + '</th>').join("") +
+    '<th>총계</th><th>수수료 제외</th><th></th></tr></thead><tbody>';
+  computed.forEach((r) => {
+    tableInner += '<tr><td><input type="month" value="' + r.month + '" data-action="sales-month" data-row="' + r.id + '"></td>';
+    channels.forEach((c) => {
+      tableInner += '<td><input type="number" value="' + r.amounts[c.id] + '" data-action="sales-amount" data-row="' + r.id + '" data-ch="' + c.id + '"></td>';
+    });
+    tableInner += '<td class="mono strong">' + formatWon(r.gross) + '</td><td class="mono muted">' + formatWon(r.net) + '</td>' +
+      '<td><button class="del-btn" data-action="sales-remove" data-row="' + r.id + '">&#128465;</button></td></tr>';
+  });
+  tableInner += '</tbody></table>';
+  html += collapsibleTable("sales", "월별 결제금액 입력", tableInner, "sales-add");
+
+  return html;
+}
+
+/* ---------------- tab: 마케팅 ---------------- */
+function computeMarketing() {
+  const { channels, rows } = state.marketing;
+  const computed = rows.map((r) => Object.assign({}, r, { spendTotal: channels.reduce((s, c) => s + (Number(r.spend[c.id]) || 0), 0) }));
+  let latestIdx = computed.length - 1;
+  for (let i = computed.length - 1; i >= 0; i--) if (computed[i].spendTotal > 0) { latestIdx = i; break; }
+  const latest = computed[latestIdx];
+  const prev = latestIdx > 0 ? computed[latestIdx - 1] : null;
+  const roas = latest.spendTotal > 0 ? (latest.revenue / latest.spendTotal) * 100 : null;
+  const cpa = latest.conversions > 0 ? latest.spendTotal / latest.conversions : null;
+  const delta = prev && prev.spendTotal > 0 ? ((latest.spendTotal - prev.spendTotal) / prev.spendTotal) * 100 : null;
+  return { channels, rows, computed, latest, prev, roas, cpa, delta };
+}
+
+function renderMarketing() {
+  const { channels, computed, latest, prev, roas, cpa, delta } = computeMarketing();
+  const sparkSpend = computed.map((r) => r.spendTotal);
+  const sparkConv = computed.map((r) => r.conversions);
+  const rankItems = channels.map((c) => ({ label: c.name, value: Number(latest.spend[c.id]) || 0, color: c.color }));
+  const points = computed.map((r) => ({ label: r.month.slice(2), value: r.spendTotal }));
+
+  let html = '<div class="kpi-grid">';
+  html += kpiCard("이번 달 총 광고비", formatEok(latest.spendTotal), latest.month, null, "#2DA8E0", sparkSpend);
+  html += kpiCard("ROAS", roas == null ? "—" : roas.toFixed(0) + "%", "매출 ÷ 광고비 (직접입력 매출 기준)", null, "#8B5CF6");
+  html += kpiCard("총 전환수", latest.conversions ? latest.conversions.toLocaleString("ko-KR") + "건" : "—", prev ? "전월 " + prev.conversions + "건" : "", null, "#22C55E", sparkConv);
+  html += kpiCard("CPA", cpa == null ? "—" : formatWon(cpa), delta != null ? "광고비 전월 대비" : "전환수 입력 필요", delta);
+  html += '</div>';
+
+  html += '<div class="grid-2">' +
+    rankedListCard("채널별 광고비 · " + latest.month, rankItems, formatWon) +
+    trendChartCard("월별 광고비 추이", points, "#2DA8E0", formatEok) +
+    '</div>';
+
+  let tableInner = '<table class="data-table"><thead><tr><th>월</th>' +
+    channels.map((c) => '<th>' + c.name + '</th>').join("") +
+    '<th>광고비 합계</th><th>전환수</th><th>매출(직접입력)</th><th></th></tr></thead><tbody>';
+  computed.forEach((r) => {
+    tableInner += '<tr><td><input type="month" value="' + r.month + '" data-action="mkt-month" data-row="' + r.id + '"></td>';
+    channels.forEach((c) => {
+      tableInner += '<td><input type="number" value="' + r.spend[c.id] + '" data-action="mkt-spend" data-row="' + r.id + '" data-ch="' + c.id + '"></td>';
+    });
+    tableInner += '<td class="mono strong">' + formatWon(r.spendTotal) + '</td>' +
+      '<td><input type="number" value="' + r.conversions + '" data-action="mkt-conv" data-row="' + r.id + '"></td>' +
+      '<td><input type="number" value="' + r.revenue + '" data-action="mkt-rev" data-row="' + r.id + '"></td>' +
+      '<td><button class="del-btn" data-action="mkt-remove" data-row="' + r.id + '">&#128465;</button></td></tr>';
+  });
+  tableInner += '</tbody></table>';
+  html += collapsibleTable("marketing", "월별 마케팅 데이터 입력", tableInner, "mkt-add");
+
+  return html;
+}
+
+/* ---------------- tab: CRM ---------------- */
+function renderCrm() {
+  const { tiers, rows, tierCounts, target } = state.crm;
+  const latestIdx = rows.length - 1;
+  const latest = rows[latestIdx];
+  const prev = latestIdx > 0 ? rows[latestIdx - 1] : null;
+  const delta = prev && prev.kakaoFriends > 0 ? ((latest.kakaoFriends - prev.kakaoFriends) / prev.kakaoFriends) * 100 : null;
+  const totalMembers = tiers.reduce((s, t) => s + (Number(tierCounts[t.id]) || 0), 0);
+  const topTier = tiers.reduce((b, t) => (!b || (Number(tierCounts[t.id]) || 0) > (Number(tierCounts[b.id]) || 0) ? t : b), null);
+  const achieveRate = (latest.kakaoFriends / target) * 100;
+  const sparkFriends = rows.map((r) => r.kakaoFriends);
+
+  const tierItems = tiers.map((t) => ({ label: t.name, value: Number(tierCounts[t.id]) || 0, color: t.color }));
+  const points = rows.map((r) => ({ label: r.month.slice(2), value: r.kakaoFriends }));
+
+  let html = '<div class="kpi-grid">';
+  html += kpiCard("카카오톡 친구수", latest.kakaoFriends.toLocaleString("ko-KR") + "명", "목표 " + target.toLocaleString("ko-KR") + "명", delta, "#EAB308", sparkFriends);
+  html += kpiCard("목표 달성률", Math.min(achieveRate, 999).toFixed(0) + "%", "런칭 전 카카오 목표 대비", null, "#22C55E");
+  html += kpiCard("총 회원수", totalMembers.toLocaleString("ko-KR") + "명", "등급별 합계", null, "#8B5CF6");
+  html += kpiCard("최다 등급", topTier ? topTier.name : "—", topTier ? (Number(tierCounts[topTier.id]) || 0).toLocaleString("ko-KR") + "명" : "", null, "#10B981");
+  html += '</div>';
+
+  html += '<div class="grid-2">' +
+    rankedListCard("등급별 회원 분포", tierItems, (v) => v.toLocaleString("ko-KR") + "명") +
+    trendChartCard("카카오톡 친구수 추이", points, "#EAB308", (v) => v.toLocaleString("ko-KR")) +
+    '</div>';
+
+  html += '<div class="card section-card"><div class="section-head"><div class="section-title">등급별 회원수 (현재 스냅샷)</div></div>' +
+    commissionGrid("crm-tier", tiers.map((t) => ({ id: t.id, name: t.name, color: t.color, value: tierCounts[t.id] })), null, "명") +
+    '</div>';
+
+  let tableInner = '<table class="data-table"><thead><tr><th>월</th><th>카카오톡 친구수</th><th>신규 가입</th><th></th></tr></thead><tbody>';
+  rows.forEach((r) => {
+    tableInner += '<tr><td><input type="month" value="' + r.month + '" data-action="crm-month" data-row="' + r.id + '"></td>' +
+      '<td><input type="number" value="' + r.kakaoFriends + '" data-action="crm-friends" data-row="' + r.id + '"></td>' +
+      '<td><input type="number" value="' + r.newSignups + '" data-action="crm-signups" data-row="' + r.id + '"></td>' +
+      '<td><button class="del-btn" data-action="crm-remove" data-row="' + r.id + '">&#128465;</button></td></tr>';
+  });
+  tableInner += '</tbody></table>';
+  html += collapsibleTable("crm", "월별 CRM 데이터 입력", tableInner, "crm-add");
+
+  return html;
+}
+
+/* ---------------- tab: 분석 ---------------- */
+function renderAnalytics() {
+  const { channels, devices, rows, channelSessions, deviceSessions } = state.analytics;
+  const latestIdx = rows.length - 1;
+  const latest = rows[latestIdx];
+  const prev = latestIdx > 0 ? rows[latestIdx - 1] : null;
+  const delta = prev && prev.sessions > 0 ? ((latest.sessions - prev.sessions) / prev.sessions) * 100 : null;
+  const sparkSessions = rows.map((r) => r.sessions);
+
+  const channelItems = channels.map((c) => ({ label: c.name, value: Number(channelSessions[c.id]) || 0, color: c.color }));
+  const deviceItems = devices.map((d) => ({ id: d.id, name: d.name, value: Number(deviceSessions[d.id]) || 0, color: d.color }));
+  const points = rows.map((r) => ({ label: r.month.slice(2), value: r.sessions }));
+
+  let html = '<div class="kpi-grid">';
+  html += kpiCard("이번 달 총 세션", latest.sessions.toLocaleString("ko-KR"), latest.month, delta, "#2DA8E0", sparkSessions);
+  html += kpiCard("평균 체류시간", latest.avgDuration + "초", prev ? "전월 " + prev.avgDuration + "초" : "", null, "#8B5CF6");
+  html += kpiCard("전환율", latest.conversionRate + "%", prev ? "전월 " + prev.conversionRate + "%" : "", null, "#22C55E");
+  html += kpiCard("이탈률", latest.bounceRate + "%", prev ? "전월 " + prev.bounceRate + "%" : "", null, "#EF4444");
+  html += '</div>';
+
+  html += '<div class="grid-2">' +
+    donutCardHtml("디바이스별 세션 비중", deviceItems, "세션") +
+    rankedListCard("유입 채널별 세션", channelItems, (v) => v.toLocaleString("ko-KR")) +
+    '</div>';
+
+  html += trendChartCard("월별 세션 추이", points, "#2DA8E0", (v) => v.toLocaleString("ko-KR"));
+
+  html += '<div class="card section-card"><div class="section-head"><div class="section-title">채널 / 디바이스 세션 스냅샷 (' + latest.month + ')</div></div>' +
+    commissionGrid("an-channel", channels.map((c) => ({ id: c.id, name: c.name, color: c.color, value: channelSessions[c.id] })), null, "") +
+    commissionGrid("an-device", devices.map((d) => ({ id: d.id, name: d.name, color: d.color, value: deviceSessions[d.id] })), null, "") +
+    '</div>';
+
+  let tableInner = '<table class="data-table"><thead><tr><th>월</th><th>세션수</th><th>전환율(%)</th><th>이탈률(%)</th><th>평균체류(초)</th><th></th></tr></thead><tbody>';
+  rows.forEach((r) => {
+    tableInner += '<tr><td><input type="month" value="' + r.month + '" data-action="an-month" data-row="' + r.id + '"></td>' +
+      '<td><input type="number" value="' + r.sessions + '" data-action="an-sessions" data-row="' + r.id + '"></td>' +
+      '<td><input type="number" value="' + r.conversionRate + '" data-action="an-conv" data-row="' + r.id + '"></td>' +
+      '<td><input type="number" value="' + r.bounceRate + '" data-action="an-bounce" data-row="' + r.id + '"></td>' +
+      '<td><input type="number" value="' + r.avgDuration + '" data-action="an-duration" data-row="' + r.id + '"></td>' +
+      '<td><button class="del-btn" data-action="an-remove" data-row="' + r.id + '">&#128465;</button></td></tr>';
+  });
+  tableInner += '</tbody></table>';
+  html += collapsibleTable("analytics", "월별 분석 데이터 입력", tableInner, "an-add");
+
+  return html;
+}
+
+/* ---------------- nav + render dispatch ---------------- */
+const NAV = [
+  { id: "sales", label: "매출" },
+  { id: "marketing", label: "마케팅" },
+  { id: "crm", label: "CRM" },
+  { id: "analytics", label: "분석" }
+];
+
+function renderNav() {
+  document.getElementById("nav").innerHTML = NAV.map((n) =>
+    '<div class="nav-item ' + (ui.tab === n.id ? "active" : "") + '" data-action="switch-tab" data-tab="' + n.id + '">' +
+    n.label + '<span class="dot"></span></div>'
+  ).join("");
+  document.getElementById("topbar-title").textContent = NAV.find((n) => n.id === ui.tab).label + " 대시보드";
+}
+
+function render() {
+  renderNav();
+  const content = document.getElementById("tab-content");
+  if (ui.tab === "sales") content.innerHTML = renderSales();
+  else if (ui.tab === "marketing") content.innerHTML = renderMarketing();
+  else if (ui.tab === "crm") content.innerHTML = renderCrm();
+  else if (ui.tab === "analytics") content.innerHTML = renderAnalytics();
+}
+
+/* ---------------- event handling ---------------- */
+document.addEventListener("click", (e) => {
+  const el = e.target.closest("[data-action]");
+  if (!el) return;
+  const action = el.dataset.action;
+
+  if (action === "switch-tab") { ui.tab = el.dataset.tab; render(); return; }
+  if (action === "toggle-table") { const id = el.dataset.tableId; ui.tableOpen[id] = !ui.tableOpen[id]; render(); return; }
+
+  if (action === "sales-add") {
+    const last = state.sales.rows[state.sales.rows.length - 1];
+    const amounts = {}; state.sales.channels.forEach((c) => amounts[c.id] = 0);
+    state.sales.rows.push({ id: "s" + Date.now(), month: last ? nextMonth(last.month) : "2026-06", amounts });
+    persist(); render(); return;
+  }
+  if (action === "sales-remove") { state.sales.rows = state.sales.rows.filter((r) => r.id !== el.dataset.row); persist(); render(); return; }
+
+  if (action === "mkt-add") {
+    const last = state.marketing.rows[state.marketing.rows.length - 1];
+    const spend = {}; state.marketing.channels.forEach((c) => spend[c.id] = 0);
+    state.marketing.rows.push({ id: "m" + Date.now(), month: last ? nextMonth(last.month) : "2026-06", spend, conversions: 0, revenue: 0 });
+    persist(); render(); return;
+  }
+  if (action === "mkt-remove") { state.marketing.rows = state.marketing.rows.filter((r) => r.id !== el.dataset.row); persist(); render(); return; }
+
+  if (action === "crm-add") {
+    const last = state.crm.rows[state.crm.rows.length - 1];
+    state.crm.rows.push({ id: "c" + Date.now(), month: last ? nextMonth(last.month) : "2026-06", kakaoFriends: 0, newSignups: 0 });
+    persist(); render(); return;
+  }
+  if (action === "crm-remove") { state.crm.rows = state.crm.rows.filter((r) => r.id !== el.dataset.row); persist(); render(); return; }
+
+  if (action === "an-add") {
+    const last = state.analytics.rows[state.analytics.rows.length - 1];
+    state.analytics.rows.push({ id: "a" + Date.now(), month: last ? nextMonth(last.month) : "2026-06", sessions: 0, conversionRate: 0, bounceRate: 0, avgDuration: 0 });
+    persist(); render(); return;
+  }
+  if (action === "an-remove") { state.analytics.rows = state.analytics.rows.filter((r) => r.id !== el.dataset.row); persist(); render(); return; }
+});
+
+document.getElementById("reset-btn").addEventListener("click", () => {
+  if (confirm("모든 데이터를 초기값으로 되돌릴까요? 되돌릴 수 없습니다.")) {
+    state = defaultState();
+    persist(); render();
+  }
+});
+
+document.addEventListener("change", (e) => {
+  const el = e.target;
+  const action = el.dataset.action;
+  if (!action) return;
+  const row = el.dataset.row, ch = el.dataset.ch, id = el.dataset.id;
+  const val = el.type === "month" ? el.value : (el.value === "" ? 0 : Number(el.value));
+
+  const findRow = (arr) => arr.find((r) => r.id === row);
+
+  if (action === "sales-month") findRow(state.sales.rows).month = val;
+  else if (action === "sales-amount") findRow(state.sales.rows).amounts[ch] = val;
+  else if (action === "sales-commission") { const c = state.sales.channels.find((c) => c.id === id); c.commission = val; }
+
+  else if (action === "mkt-month") findRow(state.marketing.rows).month = val;
+  else if (action === "mkt-spend") findRow(state.marketing.rows).spend[ch] = val;
+  else if (action === "mkt-conv") findRow(state.marketing.rows).conversions = val;
+  else if (action === "mkt-rev") findRow(state.marketing.rows).revenue = val;
+
+  else if (action === "crm-month") findRow(state.crm.rows).month = val;
+  else if (action === "crm-friends") findRow(state.crm.rows).kakaoFriends = val;
+  else if (action === "crm-signups") findRow(state.crm.rows).newSignups = val;
+  else if (action === "crm-tier") state.crm.tierCounts[id] = val;
+
+  else if (action === "an-month") findRow(state.analytics.rows).month = val;
+  else if (action === "an-sessions") findRow(state.analytics.rows).sessions = val;
+  else if (action === "an-conv") findRow(state.analytics.rows).conversionRate = val;
+  else if (action === "an-bounce") findRow(state.analytics.rows).bounceRate = val;
+  else if (action === "an-duration") findRow(state.analytics.rows).avgDuration = val;
+  else if (action === "an-channel") state.analytics.channelSessions[id] = val;
+  else if (action === "an-device") state.analytics.deviceSessions[id] = val;
+  else return;
+
+  persist();
+  render();
+});
+
+/* ---------------- init ---------------- */
+initState();
+</script>
+</body>
+</html>
