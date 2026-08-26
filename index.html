@@ -44,8 +44,8 @@
   .note { color:#999; font-size:12px; margin-bottom:16px; }
 
   .month-grid { border-radius:24px; overflow:hidden; user-select:none; }
-  .dow-row { display:grid; grid-template-columns:repeat(7,1fr); }
-  .week-row { display:grid; grid-template-columns:repeat(7,1fr); position:relative; }
+  .dow-row { display:grid; grid-template-columns:repeat(5,1fr); }
+  .week-row { display:grid; grid-template-columns:repeat(5,1fr); position:relative; }
   .dow-cell { text-align:center; padding:10px 4px; font-size:11px; font-weight:700; color:#999; border-bottom:1px solid rgba(255,255,255,.12); }
   .day-cell { border-right:1px solid rgba(255,255,255,.08); border-bottom:1px solid rgba(255,255,255,.08); min-height:122px; padding:6px; cursor:pointer; position:relative; transition:background .08s; }
   .more-link:hover { color:#fff !important; text-decoration:underline; }
@@ -1161,21 +1161,30 @@ function firstWeekday(y,m){ return new Date(y, m-1, 1).getDay(); }
 
 function renderMonth() {
   const total = daysInMonth(curYear, curMonth);
-  const startWd = firstWeekday(curYear, curMonth);
-  const dowNames = ['일','월','화','수','목','금','토'];
+  const dowNames = ['월','화','수','목','금'];
   let html = '<div class="month-grid glass"><div class="dow-row">';
-  dowNames.forEach((d,i)=> html += `<div class="dow-cell" style="color:${i===0?'#F87171':'#888'}">${d}</div>`);
+  dowNames.forEach((d)=> html += `<div class="dow-cell" style="color:#888">${d}</div>`);
   html += '</div>';
 
-  let cells = [];
-  for (let i=0;i<startWd;i++) cells.push(null);
-  for (let d=1; d<=total; d++) cells.push(d);
-  while (cells.length % 7 !== 0) cells.push(null);
+  // 주말(토/일) 제외 - 평일만 5칸씩 묶어서 행 구성
+  let weekRows = [];
+  let currentRow = new Array(5).fill(null);
+  let started = false;
+  for (let d=1; d<=total; d++) {
+    const dow = new Date(curYear, curMonth-1, d).getDay(); // 0=일 .. 6=토
+    if (dow === 0 || dow === 6) continue;
+    const col = dow - 1; // 월=0 .. 금=4
+    if (col === 0 && started) { weekRows.push(currentRow); currentRow = new Array(5).fill(null); }
+    currentRow[col] = d;
+    started = true;
+  }
+  if (started) weekRows.push(currentRow);
 
-  for (let r=0; r<cells.length/7; r++) {
+  for (let r=0; r<weekRows.length; r++) {
+    const cellsRow = weekRows[r];
     const weekDays = [];
-    for (let c=0; c<7; c++) {
-      const day = cells[r*7+c];
+    for (let c=0; c<5; c++) {
+      const day = cellsRow[c];
       if (day !== null) weekDays.push({day, col:c, dn: dnum(curYear, curMonth, day)});
     }
     const lanes = [];
@@ -1196,17 +1205,17 @@ function renderMonth() {
     });
     const visible = placed.filter(p => p.lane < MAX_LANES);
     const barsHtml = visible.map(p => {
-      const leftPct = (p.colStart/7*100).toFixed(3);
-      const widthPct = ((p.colEnd-p.colStart+1)/7*100).toFixed(3);
+      const leftPct = (p.colStart/5*100).toFixed(3);
+      const widthPct = ((p.colEnd-p.colStart+1)/5*100).toFixed(3);
       const radiusL = p.roundLeft ? '6px' : '0';
       const radiusR = p.roundRight ? '6px' : '0';
       return `<div class="event-bar" data-id="${p.id}" style="left:calc(${leftPct}% + ${p.roundLeft?4:0}px);width:calc(${widthPct}% - ${(p.roundLeft?4:0)+(p.roundRight?4:0)}px);top:${28+p.lane*20}px;background:${p.color}26;color:${p.color};border-radius:${radiusL} ${radiusR} ${radiusR} ${radiusL};border-top:1px solid ${p.color}55;border-bottom:1px solid ${p.color}55;${p.roundLeft?`border-left:1px solid ${p.color}55;`:''}${p.roundRight?`border-right:1px solid ${p.color}55;`:''}pointer-events:auto;cursor:pointer;">${p.title}</div>`;
     }).join('');
 
     html += `<div class="week-row">`;
-    for (let c=0; c<7; c++) {
-      const day = cells[r*7+c];
-      if (day === null) { html += '<div class="day-cell empty"></div>'; continue; }
+    for (let c=0; c<5; c++) {
+      const day = cellsRow[c];
+      if (day === null || day === undefined) { html += '<div class="day-cell empty"></div>'; continue; }
       const dn = dnum(curYear, curMonth, day);
       const isToday = dn === TODAY_DNUM;
       const dayTotal = events.filter(e => dn >= e.start && dn <= e.end).length;
