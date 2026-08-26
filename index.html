@@ -4,7 +4,7 @@
 <title>모디보디 코리아 · Business Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 
 
@@ -30,6 +30,16 @@
     -webkit-backdrop-filter:blur(22px); backdrop-filter:blur(22px);
     border:1px solid rgba(255,255,255,.14);
   }
+  .num-mono { font-family:'IBM Plex Mono','Noto Sans KR',monospace; font-variant-numeric:tabular-nums; }
+  .thin-table { width:100%; border-collapse:collapse; }
+  .thin-table td, .thin-table th { padding:10px 6px; border-bottom:1px solid rgba(255,255,255,.08); font-size:12.5px; text-align:left; }
+  .thin-table th { color:#888; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; }
+  .thin-table tr:last-child td { border-bottom:none; }
+  .up-pos { color:#4ADE80; }
+  .up-neg { color:#F87171; }
+  .accordion-toggle { cursor:pointer; user-select:none; }
+  .accordion-body { display:none; }
+  .accordion-body.open { display:block; }
   .head { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; flex-wrap:wrap; gap:14px; padding:14px 18px; border-radius:20px; }
   .head-left { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
   .title { font-size:20px; font-weight:800; color:#fff; display:flex; align-items:center; gap:10px; }
