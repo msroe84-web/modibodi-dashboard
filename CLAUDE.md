@@ -52,11 +52,13 @@ docs/superpowers/plans/2026-08-26-dashboard-renewal.md 참고)
 
 - 외부 프레임워크/빌드 도구 없이 순수 HTML/CSS/JS 유지 (더블클릭으로 바로 열리는
   단일 파일이어야 함)
-- 차트는 전부 직접 그린 SVG (recharts 등 라이브러리 미사용) — sparklineSVG, trendChartSVG,
-  gaugeSVG, funnelSVG, comboChartSVG 함수 재사용
+- 차트는 전부 직접 그린 SVG (recharts 등 라이브러리 미사용). 공용 렌더링 함수는 없고, 각 위젯마다
+  좌표를 계산해 인라인 SVG 마크업을 직접 작성하는 방식임 — 새 차트 추가 시 기존 위젯의 SVG 구조를
+  참고해서 동일한 패턴으로 작성할 것.
 - 데이터는 localStorage에도 캐싱하되(오프라인 대비), 원본은 항상 구글시트
-- 새 입력 필드 추가 시 `data-action` 속성 기반 이벤트 위임 패턴을 따를 것
-  (click은 `document.addEventListener("click", ...)`, change는 `"change"` 핸들러에 분기 추가)
+- 새 인터랙션 추가 시 기존 패턴을 따라 인라인 `onclick="..."` / `onchange="..."` 속성으로 직접
+  연결할 것 (예: `toggleAccordion`, `switchMarketingSub`, `saveStockValue` 참고) — 이 파일은
+  중앙 이벤트 위임을 쓰지 않음.
 
 ## 작업 시 주의사항
 
