@@ -483,7 +483,12 @@
     </div></div><div class="tab-panel" id="panel-marketing" style="display:none;"><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px;"><div style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#ddd;font-size:11px;font-weight:700;letter-spacing:.08em;padding:5px 13px;border-radius:999px;text-transform:uppercase;">
       <span style="width:6px;height:6px;border-radius:50%;background:#F5F5F5;display:inline-block;"></span> 2026-06 ~ 2026-08</div><div style="margin-left:auto;display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);color:#ddd;font-size:12px;font-weight:600;padding:8px 14px;border-radius:12px;cursor:pointer;" title="실제 필터링은 데이터 연동 후 지원돼요 (지금은 UI만)">
       📅 2026-08-12 ~ 2026-08-25 <span style="color:#777;font-size:10px;">▾</span>
-    </div></div><div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;"><div style="flex:1;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.5);border-radius:12px;padding:12px 8px;text-align:center;font-size:11.5px;font-weight:700;letter-spacing:.03em;color:#F5F5F5;">META</div><div style="flex:1;background:rgba(255,255,255,.02);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;padding:12px 8px;text-align:center;font-size:11.5px;font-weight:600;letter-spacing:.03em;color:#999;">NAVER</div><div style="flex:1;background:rgba(255,255,255,.02);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;padding:12px 8px;text-align:center;font-size:11.5px;font-weight:600;letter-spacing:.03em;color:#999;">GOOGLE</div><div style="flex:1;background:rgba(255,255,255,.02);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;padding:12px 8px;text-align:center;font-size:11.5px;font-weight:600;letter-spacing:.03em;color:#999;">TIKTOK</div><div style="flex:1;background:rgba(255,255,255,.02);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;padding:12px 8px;text-align:center;font-size:11.5px;font-weight:600;letter-spacing:.03em;color:#999;">RETARGETING</div></div><div class="kpi3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:12px;"><div class="kpi-card" style="background:rgba(255,255,255,.055);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:22px 22px;">
+    </div></div>
+    <div style="display:flex;gap:6px;margin-bottom:16px;">
+      <button class="mkt-subtab active" data-sub="core" onclick="switchMarketingSub('core')" style="padding:8px 16px;border-radius:999px;font-size:12.5px;font-weight:700;cursor:pointer;border:1px solid rgba(255,255,255,.16);background:#fff;color:#111;">핵심지표</button>
+      <button class="mkt-subtab" data-sub="creative" onclick="switchMarketingSub('creative')" style="padding:8px 16px;border-radius:999px;font-size:12.5px;font-weight:700;cursor:pointer;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:#bbb;">소재분석</button>
+    </div>
+    <div id="mkt-core"><div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;"><div style="flex:1;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.5);border-radius:12px;padding:12px 8px;text-align:center;font-size:11.5px;font-weight:700;letter-spacing:.03em;color:#F5F5F5;">META</div><div style="flex:1;background:rgba(255,255,255,.02);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;padding:12px 8px;text-align:center;font-size:11.5px;font-weight:600;letter-spacing:.03em;color:#999;">NAVER</div><div style="flex:1;background:rgba(255,255,255,.02);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;padding:12px 8px;text-align:center;font-size:11.5px;font-weight:600;letter-spacing:.03em;color:#999;">GOOGLE</div><div style="flex:1;background:rgba(255,255,255,.02);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;padding:12px 8px;text-align:center;font-size:11.5px;font-weight:600;letter-spacing:.03em;color:#999;">TIKTOK</div><div style="flex:1;background:rgba(255,255,255,.02);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;padding:12px 8px;text-align:center;font-size:11.5px;font-weight:600;letter-spacing:.03em;color:#999;">RETARGETING</div></div><div class="kpi3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:12px;"><div class="kpi-card" style="background:rgba(255,255,255,.055);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:22px 22px;">
       <div class="kpi-icon" style="width:40px;height:40px;border-radius:11px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px;">📣</div>
       <div style="font-size:10.5px;font-weight:700;color:#bbb;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">광고비</div>
       <div class="kpi-value" style="font-size:24px;font-weight:800;color:#F5F5F5;letter-spacing:-0.01em;font-variant-numeric:tabular-nums;">890만원</div>
@@ -688,7 +693,47 @@
         
       </div>
       <div style="padding:20px 24px;flex:1;display:flex;flex-direction:column;justify-content:center;"><div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><thead><tr><th style="text-align:left;padding:10px 12px;font-size:10.5px;color:#999;font-weight:600;border-bottom:1px solid rgba(255,255,255,.1);">월</th><th style="text-align:right;padding:10px 12px;font-size:10.5px;color:#999;font-weight:600;border-bottom:1px solid rgba(255,255,255,.1);">광고비 합계</th><th style="text-align:right;padding:10px 12px;font-size:10.5px;color:#999;font-weight:600;border-bottom:1px solid rgba(255,255,255,.1);">전환수</th><th style="text-align:right;padding:10px 12px;font-size:10.5px;color:#999;font-weight:600;border-bottom:1px solid rgba(255,255,255,.1);">매출(직접입력)</th></tr></thead><tbody><tr><td style="text-align:left;padding:10px 12px;font-size:12px;color:#eee;border-bottom:1px solid rgba(255,255,255,.06);font-variant-numeric:tabular-nums;">2026-06</td><td style="text-align:right;padding:10px 12px;font-size:12px;color:#eee;border-bottom:1px solid rgba(255,255,255,.06);font-variant-numeric:tabular-nums;">0</td><td style="text-align:right;padding:10px 12px;font-size:12px;color:#eee;border-bottom:1px solid rgba(255,255,255,.06);font-variant-numeric:tabular-nums;">0</td><td style="text-align:right;padding:10px 12px;font-size:12px;color:#eee;border-bottom:1px solid rgba(255,255,255,.06);font-variant-numeric:tabular-nums;">0원</td></tr><tr><td style="text-align:left;padding:10px 12px;font-size:12px;color:#eee;border-bottom:1px solid rgba(255,255,255,.06);font-variant-numeric:tabular-nums;">2026-07</td><td style="text-align:right;padding:10px 12px;font-size:12px;color:#eee;border-bottom:1px solid rgba(255,255,255,.06);font-variant-numeric:tabular-nums;">0</td><td style="text-align:right;padding:10px 12px;font-size:12px;color:#eee;border-bottom:1px solid rgba(255,255,255,.06);font-variant-numeric:tabular-nums;">0</td><td style="text-align:right;padding:10px 12px;font-size:12px;color:#eee;border-bottom:1px solid rgba(255,255,255,.06);font-variant-numeric:tabular-nums;">0원</td></tr><tr><td style="text-align:left;padding:10px 12px;font-size:12px;color:#eee;border-bottom:1px solid rgba(255,255,255,.06);font-variant-numeric:tabular-nums;">2026-08</td><td style="text-align:right;padding:10px 12px;font-size:12px;color:#eee;border-bottom:1px solid rgba(255,255,255,.06);font-variant-numeric:tabular-nums;">8,900,000</td><td style="text-align:right;padding:10px 12px;font-size:12px;color:#eee;border-bottom:1px solid rgba(255,255,255,.06);font-variant-numeric:tabular-nums;">148</td><td style="text-align:right;padding:10px 12px;font-size:12px;color:#eee;border-bottom:1px solid rgba(255,255,255,.06);font-variant-numeric:tabular-nums;">18,690,000원</td></tr></tbody></table></div></div>
-    </div></div><div class="tab-panel" id="panel-crm" style="display:none;"><div style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#ddd;font-size:11px;font-weight:700;letter-spacing:.08em;padding:5px 13px;border-radius:999px;text-transform:uppercase;">
+    </div>
+    </div>
+    <div id="mkt-creative" style="display:none;">
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+        <button class="creative-period active" onclick="setCreativePeriod(this)" style="padding:7px 14px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid rgba(255,255,255,.16);background:#fff;color:#111;">최근 7일</button>
+        <button class="creative-period" onclick="setCreativePeriod(this)" style="padding:7px 14px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:#bbb;">최근 30일</button>
+        <button class="creative-period" onclick="setCreativePeriod(this)" style="padding:7px 14px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:#bbb;">커스텀</button>
+      </div>
+      <div class="glass" style="border-radius:20px;overflow:hidden;margin-bottom:20px;">
+        <div style="display:flex;align-items:center;gap:12px;padding:18px 24px;border-bottom:1px solid rgba(255,255,255,.1);">
+          <div style="width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">🏅</div>
+          <div><div style="font-size:16px;font-weight:700;color:#F5F5F5;">베스트 소재</div><div style="font-size:12px;color:#aaa;margin-top:2px;">목업 데이터 · Meta 크리에이티브 API 연동은 별도 작업</div></div>
+        </div>
+        <div style="padding:8px 24px 16px;overflow-x:auto;">
+          <table class="thin-table">
+            <thead><tr><th>소재</th><th>노출</th><th>클릭</th><th>CTR</th><th>CPA</th><th>ROAS</th></tr></thead>
+            <tbody>
+              <tr><td>🖼️ classic_summer_v3</td><td class="num-mono">42,100</td><td class="num-mono">1,890</td><td class="num-mono">4.5%</td><td class="num-mono">38,200원</td><td class="num-mono up-pos">265%</td></tr>
+              <tr><td>🖼️ swim_puma_collab</td><td class="num-mono">31,400</td><td class="num-mono">1,320</td><td class="num-mono">4.2%</td><td class="num-mono">41,500원</td><td class="num-mono up-pos">241%</td></tr>
+              <tr><td>🖼️ teen_soihyun_ugc</td><td class="num-mono">28,900</td><td class="num-mono">1,050</td><td class="num-mono">3.6%</td><td class="num-mono">45,900원</td><td class="num-mono up-pos">208%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="glass" style="border-radius:20px;overflow:hidden;margin-bottom:20px;">
+        <div style="display:flex;align-items:center;gap:12px;padding:18px 24px;border-bottom:1px solid rgba(255,255,255,.1);">
+          <div style="width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">📉</div>
+          <div><div style="font-size:16px;font-weight:700;color:#F5F5F5;">워스트 소재</div></div>
+        </div>
+        <div style="padding:8px 24px 16px;overflow-x:auto;">
+          <table class="thin-table">
+            <thead><tr><th>소재</th><th>노출</th><th>클릭</th><th>CTR</th><th>CPA</th><th>ROAS</th></tr></thead>
+            <tbody>
+              <tr><td>🖼️ retarget_static_02</td><td class="num-mono">18,200</td><td class="num-mono">210</td><td class="num-mono">1.2%</td><td class="num-mono">92,000원</td><td class="num-mono up-neg">61%</td></tr>
+              <tr><td>🖼️ gwp_promo_banner</td><td class="num-mono">15,600</td><td class="num-mono">180</td><td class="num-mono">1.1%</td><td class="num-mono">88,500원</td><td class="num-mono up-neg">70%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    </div><div class="tab-panel" id="panel-crm" style="display:none;"><div style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#ddd;font-size:11px;font-weight:700;letter-spacing:.08em;padding:5px 13px;border-radius:999px;text-transform:uppercase;">
       <span style="width:6px;height:6px;border-radius:50%;background:#F5F5F5;display:inline-block;"></span> 2026년 8월</div>
 <div class="kpi4" style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;margin-top:16px;">
   <div class="kpi-card" style="background:rgba(255,255,255,.055);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:22px 22px;">
@@ -995,6 +1040,26 @@ function renderStockWidget() {
         onchange="saveStockValue('${item}', this.value)">
     </div>`;
   }).join('');
+}
+function switchMarketingSub(sub) {
+  document.getElementById('mkt-core').style.display = sub === 'core' ? 'block' : 'none';
+  document.getElementById('mkt-creative').style.display = sub === 'creative' ? 'block' : 'none';
+  document.querySelectorAll('.mkt-subtab').forEach(b => {
+    const active = b.dataset.sub === sub;
+    b.classList.toggle('active', active);
+    b.style.background = active ? '#fff' : 'rgba(255,255,255,.06)';
+    b.style.color = active ? '#111' : '#bbb';
+  });
+}
+function setCreativePeriod(btn) {
+  document.querySelectorAll('.creative-period').forEach(b => {
+    b.classList.remove('active');
+    b.style.background = 'rgba(255,255,255,.06)';
+    b.style.color = '#bbb';
+  });
+  btn.classList.add('active');
+  btn.style.background = '#fff';
+  btn.style.color = '#111';
 }
 function toggleAccordion(btn) {
   const body = btn.nextElementSibling;
