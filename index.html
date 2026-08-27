@@ -1132,7 +1132,13 @@ const STOCK_LOW_THRESHOLD = 20;
 function loadStock() {
   try {
     const raw = localStorage.getItem(STOCK_KEY);
-    return raw ? JSON.parse(raw) : {};
+    const parsed = raw ? JSON.parse(raw) : {};
+    const clean = {};
+    for (const item of STOCK_ITEMS) {
+      const n = Number(parsed[item]);
+      if (Number.isFinite(n) && n >= 0) clean[item] = Math.floor(n);
+    }
+    return clean;
   } catch (e) { return {}; }
 }
 
