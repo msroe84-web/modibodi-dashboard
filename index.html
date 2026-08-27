@@ -329,7 +329,80 @@
           <div style="flex:1;background:rgba(255,255,255,0.08);border-radius:4px;height:9px;overflow:hidden;"><div style="width:0%;height:100%;background:rgba(255,255,255,.55);border-radius:4px;"></div></div>
           <span style="width:90px;text-align:right;color:#bbb;font-variant-numeric:tabular-nums;">0</span>
         </div></div></div>
-    </div></div><div style="background:rgba(255,255,255,.055);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.14);border-radius:20px;overflow:hidden;margin-bottom:20px;display:flex;flex-direction:column;height:100%;">
+    </div></div><div class="glass" style="border-radius:20px;overflow:hidden;margin-bottom:20px;">
+      <div style="display:flex;align-items:center;gap:12px;padding:18px 24px;border-bottom:1px solid rgba(255,255,255,.1);">
+        <div style="width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">💸</div>
+        <div><div style="font-size:16px;font-weight:700;color:#F5F5F5;">지출 내역</div><div style="font-size:12px;color:#aaa;margin-top:2px;">2026-08 · 카테고리 클릭 시 세부 항목 펼침</div></div>
+        <span class="num-mono" style="margin-left:auto;font-size:18px;font-weight:800;color:#F5F5F5;">6,455,000원</span>
+      </div>
+      <div style="padding:8px 12px 16px;">
+        <div class="accordion-toggle" onclick="toggleAccordion(this)" style="display:flex;align-items:center;gap:10px;padding:12px 12px;">
+          <span class="acc-caret" style="width:14px;color:#888;">▸</span>
+          <span style="flex:1;color:#eee;font-size:13px;">광고비</span>
+          <span class="num-mono" style="color:#ddd;font-size:13px;">1,000,000원</span>
+        </div>
+        <div class="accordion-body" style="padding:0 12px 8px 36px;">
+          <table class="thin-table"><tbody>
+            <tr><td>META</td><td class="num-mono" style="text-align:right;">520,000원</td></tr>
+            <tr><td>NAVER SA</td><td class="num-mono" style="text-align:right;">210,000원</td></tr>
+            <tr><td>NAVER DA</td><td class="num-mono" style="text-align:right;">80,000원</td></tr>
+            <tr><td>KAKAO</td><td class="num-mono" style="text-align:right;">60,000원</td></tr>
+            <tr><td>GOOGLE</td><td class="num-mono" style="text-align:right;">70,000원</td></tr>
+            <tr><td>TIKTOK</td><td class="num-mono" style="text-align:right;">40,000원</td></tr>
+            <tr><td>리타겟팅</td><td class="num-mono" style="text-align:right;">20,000원</td></tr>
+          </tbody></table>
+        </div>
+        <div class="accordion-toggle" onclick="toggleAccordion(this)" style="display:flex;align-items:center;gap:10px;padding:12px 12px;">
+          <span class="acc-caret" style="width:14px;color:#888;">▸</span>
+          <span style="flex:1;color:#eee;font-size:13px;">매입가(COGS)</span>
+          <span class="num-mono" style="color:#ddd;font-size:13px;">3,200,000원</span>
+        </div>
+        <div class="accordion-body" style="padding:0 12px 8px 36px;">
+          <table class="thin-table"><tbody>
+            <tr><td>생리팬티</td><td class="num-mono" style="text-align:right;">2,400,000원</td></tr>
+            <tr><td>수영복</td><td class="num-mono" style="text-align:right;">500,000원</td></tr>
+            <tr><td>틴에이지</td><td class="num-mono" style="text-align:right;">300,000원</td></tr>
+          </tbody></table>
+        </div>
+        <div class="accordion-toggle" onclick="toggleAccordion(this)" style="display:flex;align-items:center;gap:10px;padding:12px 12px;">
+          <span class="acc-caret" style="width:14px;color:#888;">▸</span>
+          <span style="flex:1;color:#eee;font-size:13px;">수수료 (PG·외부몰·인플루언서 R/S)</span>
+          <span class="num-mono" style="color:#ddd;font-size:13px;">655,000원</span>
+        </div>
+        <div class="accordion-body" style="padding:0 12px 8px 36px;">
+          <table class="thin-table"><tbody>
+            <tr><td>자사몰 PG사 (3.5%)</td><td class="num-mono" style="text-align:right;">375,000원</td></tr>
+            <tr><td>외부몰 수수료 (20%)</td><td class="num-mono" style="text-align:right;">240,000원</td></tr>
+            <tr><td>인플루언서 R/S (35%)</td><td class="num-mono" style="text-align:right;">40,000원</td></tr>
+          </tbody></table>
+        </div>
+        <div class="accordion-toggle" onclick="toggleAccordion(this)" style="display:flex;align-items:center;gap:10px;padding:12px 12px;">
+          <span class="acc-caret" style="width:14px;color:#888;">▸</span>
+          <span style="flex:1;color:#eee;font-size:13px;">물류비</span>
+          <span class="num-mono" style="color:#ddd;font-size:13px;">900,000원</span>
+        </div>
+        <div class="accordion-body" style="padding:0 12px 8px 36px;">
+          <table class="thin-table"><tbody>
+            <tr><td>CJ택배 대행비</td><td class="num-mono" style="text-align:right;">800,000원</td></tr>
+            <tr><td>반품 처리 (2%)</td><td class="num-mono" style="text-align:right;">100,000원</td></tr>
+          </tbody></table>
+        </div>
+        <div class="accordion-toggle" onclick="toggleAccordion(this)" style="display:flex;align-items:center;gap:10px;padding:12px 12px;">
+          <span class="acc-caret" style="width:14px;color:#888;">▸</span>
+          <span style="flex:1;color:#eee;font-size:13px;">기타 고정비</span>
+          <span class="num-mono" style="color:#ddd;font-size:13px;">700,000원</span>
+        </div>
+        <div class="accordion-body" style="padding:0 12px 8px 36px;">
+          <table class="thin-table"><tbody>
+            <tr><td>사이트 구축/관리</td><td class="num-mono" style="text-align:right;">300,000원</td></tr>
+            <tr><td>부자재</td><td class="num-mono" style="text-align:right;">150,000원</td></tr>
+            <tr><td>GWP 제작</td><td class="num-mono" style="text-align:right;">150,000원</td></tr>
+            <tr><td>CS 대행</td><td class="num-mono" style="text-align:right;">50,000원</td></tr>
+            <tr><td>촬영</td><td class="num-mono" style="text-align:right;">50,000원</td></tr>
+          </tbody></table>
+        </div>
+      </div>
+    </div><div style="background:rgba(255,255,255,.055);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.14);border-radius:20px;overflow:hidden;margin-bottom:20px;display:flex;flex-direction:column;height:100%;">
       <div style="display:flex;align-items:center;gap:12px;padding:18px 24px;border-bottom:1px solid rgba(255,255,255,.1);flex-wrap:wrap;flex-shrink:0;">
         <div style="width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">🚩</div>
         <div><div style="font-size:16px;font-weight:700;color:#F5F5F5;">다가오는 마일스톤</div><div style="font-size:12px;color:#aaa;margin-top:2px;">일정관리 탭과 자동 연동</div></div>
@@ -1027,6 +1100,12 @@
 <div class="chart-tooltip2" id="globalTip"></div>
 
 <script>
+function toggleAccordion(btn) {
+  const body = btn.nextElementSibling;
+  body.classList.toggle('open');
+  const caret = btn.querySelector('.acc-caret');
+  if (caret) caret.textContent = body.classList.contains('open') ? '▾' : '▸';
+}
 function switchTab(id) {
   document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
   document.getElementById('panel-' + id).style.display = 'block';
