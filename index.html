@@ -40,6 +40,10 @@
   .accordion-toggle { cursor:pointer; user-select:none; }
   .accordion-body { display:none; }
   .accordion-body.open { display:block; }
+  .mkt-subtab { background:rgba(255,255,255,.06); color:#bbb; }
+  .mkt-subtab.active { background:#fff; color:#111; }
+  .creative-period { background:rgba(255,255,255,.06); color:#bbb; }
+  .creative-period.active { background:#fff; color:#111; }
   .head { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; flex-wrap:wrap; gap:14px; padding:14px 18px; border-radius:20px; }
   .head-left { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
   .title { font-size:20px; font-weight:800; color:#fff; display:flex; align-items:center; gap:10px; }
@@ -485,8 +489,8 @@
       📅 2026-08-12 ~ 2026-08-25 <span style="color:#777;font-size:10px;">▾</span>
     </div></div>
     <div style="display:flex;gap:6px;margin-bottom:16px;">
-      <button class="mkt-subtab active" data-sub="core" onclick="switchMarketingSub('core')" style="padding:8px 16px;border-radius:999px;font-size:12.5px;font-weight:700;cursor:pointer;border:1px solid rgba(255,255,255,.16);background:#fff;color:#111;">핵심지표</button>
-      <button class="mkt-subtab" data-sub="creative" onclick="switchMarketingSub('creative')" style="padding:8px 16px;border-radius:999px;font-size:12.5px;font-weight:700;cursor:pointer;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:#bbb;">소재분석</button>
+      <button class="mkt-subtab active" data-sub="core" onclick="switchMarketingSub('core')" style="padding:8px 16px;border-radius:999px;font-size:12.5px;font-weight:700;cursor:pointer;border:1px solid rgba(255,255,255,.16);">핵심지표</button>
+      <button class="mkt-subtab" data-sub="creative" onclick="switchMarketingSub('creative')" style="padding:8px 16px;border-radius:999px;font-size:12.5px;font-weight:700;cursor:pointer;border:1px solid rgba(255,255,255,.16);">소재분석</button>
     </div>
     <div id="mkt-core"><div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;"><div style="flex:1;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.5);border-radius:12px;padding:12px 8px;text-align:center;font-size:11.5px;font-weight:700;letter-spacing:.03em;color:#F5F5F5;">META</div><div style="flex:1;background:rgba(255,255,255,.02);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;padding:12px 8px;text-align:center;font-size:11.5px;font-weight:600;letter-spacing:.03em;color:#999;">NAVER</div><div style="flex:1;background:rgba(255,255,255,.02);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;padding:12px 8px;text-align:center;font-size:11.5px;font-weight:600;letter-spacing:.03em;color:#999;">GOOGLE</div><div style="flex:1;background:rgba(255,255,255,.02);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;padding:12px 8px;text-align:center;font-size:11.5px;font-weight:600;letter-spacing:.03em;color:#999;">TIKTOK</div><div style="flex:1;background:rgba(255,255,255,.02);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;padding:12px 8px;text-align:center;font-size:11.5px;font-weight:600;letter-spacing:.03em;color:#999;">RETARGETING</div></div><div class="kpi3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:12px;"><div class="kpi-card" style="background:rgba(255,255,255,.055);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:22px 22px;">
       <div class="kpi-icon" style="width:40px;height:40px;border-radius:11px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px;">📣</div>
@@ -697,9 +701,9 @@
     </div>
     <div id="mkt-creative" style="display:none;">
       <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
-        <button class="creative-period active" onclick="setCreativePeriod(this)" style="padding:7px 14px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid rgba(255,255,255,.16);background:#fff;color:#111;">최근 7일</button>
-        <button class="creative-period" onclick="setCreativePeriod(this)" style="padding:7px 14px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:#bbb;">최근 30일</button>
-        <button class="creative-period" onclick="setCreativePeriod(this)" style="padding:7px 14px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:#bbb;">커스텀</button>
+        <button class="creative-period active" onclick="setCreativePeriod(this)" style="padding:7px 14px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid rgba(255,255,255,.16);">최근 7일</button>
+        <button class="creative-period" onclick="setCreativePeriod(this)" style="padding:7px 14px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid rgba(255,255,255,.16);">최근 30일</button>
+        <button class="creative-period" onclick="setCreativePeriod(this)" style="padding:7px 14px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid rgba(255,255,255,.16);">커스텀</button>
       </div>
       <div class="glass" style="border-radius:20px;overflow:hidden;margin-bottom:20px;">
         <div style="display:flex;align-items:center;gap:12px;padding:18px 24px;border-bottom:1px solid rgba(255,255,255,.1);">
@@ -1045,21 +1049,12 @@ function switchMarketingSub(sub) {
   document.getElementById('mkt-core').style.display = sub === 'core' ? 'block' : 'none';
   document.getElementById('mkt-creative').style.display = sub === 'creative' ? 'block' : 'none';
   document.querySelectorAll('.mkt-subtab').forEach(b => {
-    const active = b.dataset.sub === sub;
-    b.classList.toggle('active', active);
-    b.style.background = active ? '#fff' : 'rgba(255,255,255,.06)';
-    b.style.color = active ? '#111' : '#bbb';
+    b.classList.toggle('active', b.dataset.sub === sub);
   });
 }
 function setCreativePeriod(btn) {
-  document.querySelectorAll('.creative-period').forEach(b => {
-    b.classList.remove('active');
-    b.style.background = 'rgba(255,255,255,.06)';
-    b.style.color = '#bbb';
-  });
+  document.querySelectorAll('.creative-period').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  btn.style.background = '#fff';
-  btn.style.color = '#111';
 }
 function toggleAccordion(btn) {
   const body = btn.nextElementSibling;
