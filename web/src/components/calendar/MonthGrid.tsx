@@ -63,8 +63,13 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
       onMouseUp={handleMouseUp}
     >
       <div className="grid grid-cols-5 border-b border-hairline bg-surface-sunken">
-        {WEEKDAY_LABELS.map((d) => (
-          <div key={d} className="py-2 text-center text-[11px] font-semibold text-ink-muted">
+        {WEEKDAY_LABELS.map((d, i) => (
+          <div
+            key={d}
+            className={`py-2 text-center text-[11px] font-semibold text-ink-muted ${
+              i === 0 ? 'rounded-tl-2xl' : i === 4 ? 'rounded-tr-2xl' : ''
+            }`}
+          >
             {d}
           </div>
         ))}
@@ -73,11 +78,24 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
       {weekRows.map((row, rowIndex) => {
         const placedBars = placeEventBars(row, events);
         const visibleBars = placedBars.filter((p) => p.lane < MAX_VISIBLE_LANES);
+        const isLastRow = rowIndex === weekRows.length - 1;
 
         return (
           <div key={rowIndex} className="relative grid grid-cols-5 border-b border-hairline last:border-b-0">
             {row.map((cell, col) => {
-              if (!cell) return <div key={col} className="h-24 bg-surface-sunken/40" />;
+              const isLastCol = col === 4;
+              // No overflow-hidden on the grid (the popover below needs to escape it near
+              // edges), so the corner cells round themselves to match the outer border
+              // instead of relying on ancestor clipping.
+              const cornerClass = !isLastRow
+                ? ''
+                : col === 0
+                  ? 'rounded-bl-2xl'
+                  : isLastCol
+                    ? 'rounded-br-2xl'
+                    : '';
+
+              if (!cell) return <div key={col} className={`h-24 bg-surface-sunken/40 ${cornerClass}`} />;
               const isToday = cell.iso === todayIso;
               const inDrag = Boolean(dragLo && dragHi && cell.iso >= dragLo && cell.iso <= dragHi);
               const dayCount = eventsOnDay(cell.iso, events).length;
@@ -88,13 +106,11 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
               // event that doesn't show up in this day's own visible bars.
               const visibleOnThisDay = visibleBars.filter((b) => b.colStart <= col && col <= b.colEnd).length;
               const hiddenCount = dayCount - visibleOnThisDay;
-              const isLastCol = col === 4;
-              const isLastRow = rowIndex === weekRows.length - 1;
 
               return (
                 <div
                   key={col}
-                  className={`relative h-24 border-r border-hairline p-1.5 last:border-r-0 ${
+                  className={`relative h-24 border-r border-hairline p-1.5 last:border-r-0 ${cornerClass} ${
                     inDrag ? 'bg-primary-soft' : 'bg-surface hover:bg-surface-sunken'
                   }`}
                   onMouseDown={() => handleMouseDown(cell.iso)}
