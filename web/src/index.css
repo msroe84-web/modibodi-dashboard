@@ -154,6 +154,7 @@
   --color-card-info: var(--card-info);
   --color-card-text: var(--card-text);
   --color-card-silver: var(--card-silver);
+  --color-card-hairline: var(--card-hairline);
 
   --font-sans: "Noto Sans KR", system-ui, -apple-system, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
