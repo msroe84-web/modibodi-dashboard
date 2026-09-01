@@ -21,3 +21,34 @@ export interface CalendarEventRow {
   title: string;
   type: 'promo' | 'ad' | 'restock';
 }
+
+export type CreativeFormat = 'image' | 'video' | 'carousel';
+export type CreativeStatus = 'active' | 'paused';
+export type CreativeGrade = 'best' | 'good' | 'replace';
+
+export interface AdCreativeRow {
+  id: string;
+  name: string;
+  format: CreativeFormat;
+  channel: 'Meta';
+  status: CreativeStatus;
+  spend: number;
+  impressions: number;
+  clicks: number;
+  conversions: number;
+  startDate: string;
+}
+
+export interface PersonalCalendarEvent {
+  id: string;
+  title: string;
+  desc: string;
+  /** ISO date, e.g. '2026-09-01'. Inclusive. */
+  start: string;
+  /** ISO date, inclusive, >= start. */
+  end: string;
+  color: string;
+  /** 'HH:MM', 24h. */
+  startTime: string;
+  endTime: string;
+}
