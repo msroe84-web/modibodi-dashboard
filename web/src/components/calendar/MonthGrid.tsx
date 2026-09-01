@@ -24,12 +24,15 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [popoverIso, setPopoverIso] = useState<string | null>(null);
 
+  function abortDrag() {
+    setIsMouseDown(false);
+    setDragAnchorIso(null);
+    setDragHoverIso(null);
+  }
+
   useEffect(() => {
-    function handleGlobalMouseUp() {
-      setIsMouseDown(false);
-    }
-    window.addEventListener('mouseup', handleGlobalMouseUp);
-    return () => window.removeEventListener('mouseup', handleGlobalMouseUp);
+    window.addEventListener('mouseup', abortDrag);
+    return () => window.removeEventListener('mouseup', abortDrag);
   }, []);
 
   const dragLo = dragAnchorIso && dragHoverIso ? (dragAnchorIso < dragHoverIso ? dragAnchorIso : dragHoverIso) : null;
@@ -55,8 +58,8 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
 
   return (
     <div
-      className="select-none overflow-hidden rounded-2xl border border-hairline"
-      onMouseLeave={() => setIsMouseDown(false)}
+      className="select-none rounded-2xl border border-hairline"
+      onMouseLeave={abortDrag}
       onMouseUp={handleMouseUp}
     >
       <div className="grid grid-cols-5 border-b border-hairline bg-surface-sunken">
@@ -78,7 +81,15 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
               const isToday = cell.iso === todayIso;
               const inDrag = Boolean(dragLo && dragHi && cell.iso >= dragLo && cell.iso <= dragHi);
               const dayCount = eventsOnDay(cell.iso, events).length;
-              const hiddenCount = dayCount - MAX_VISIBLE_LANES;
+              // Count visible bars actually covering this column, not a flat
+              // dayCount - MAX_VISIBLE_LANES: a multi-day event can be pushed past
+              // MAX_VISIBLE_LANES by a conflict on a *different* day of its own span,
+              // which would make the flat count under-report (or hide entirely) an
+              // event that doesn't show up in this day's own visible bars.
+              const visibleOnThisDay = visibleBars.filter((b) => b.colStart <= col && col <= b.colEnd).length;
+              const hiddenCount = dayCount - visibleOnThisDay;
+              const isLastCol = col === 4;
+              const isLastRow = rowIndex === weekRows.length - 1;
 
               return (
                 <div
@@ -109,7 +120,11 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
                     </button>
                   )}
                   {popoverIso === cell.iso && (
-                    <div className="absolute left-1 top-full z-20 mt-1 w-52 rounded-xl border border-hairline bg-surface p-2 shadow-2xl">
+                    <div
+                      className={`absolute z-20 w-52 rounded-xl border border-hairline bg-surface p-2 shadow-2xl ${
+                        isLastCol ? 'right-1' : 'left-1'
+                      } ${isLastRow ? 'bottom-full mb-1' : 'top-full mt-1'}`}
+                    >
                       <div className="mb-1.5 flex items-center justify-between px-1">
                         <span className="text-[11px] font-bold text-ink">{cell.day}일 일정</span>
                         <button
