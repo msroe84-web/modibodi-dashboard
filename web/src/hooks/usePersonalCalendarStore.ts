@@ -7,11 +7,11 @@ const STORAGE_KEY = 'modibodi_personal_calendar_v1';
 function loadStoredEvents(): PersonalCalendarEvent[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return mockPersonalEvents;
+    if (!raw) return [...mockPersonalEvents];
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : mockPersonalEvents;
+    return Array.isArray(parsed) ? parsed : [...mockPersonalEvents];
   } catch {
-    return mockPersonalEvents;
+    return [...mockPersonalEvents];
   }
 }
 
