@@ -25,9 +25,10 @@ export function AdPerformanceTab() {
   }, []);
 
   const replaceCount = scored.filter((c) => c.grade === 'replace').length;
-  const avgCtr = scored.reduce((sum, c) => sum + c.ctr, 0) / scored.length;
+  const avgCtr = scored.length > 0 ? scored.reduce((sum, c) => sum + c.ctr, 0) / scored.length : 0;
   const avgCpaSamples = scored.filter((c) => Number.isFinite(c.cpa));
-  const avgCpa = avgCpaSamples.reduce((sum, c) => sum + c.cpa, 0) / avgCpaSamples.length;
+  const avgCpa =
+    avgCpaSamples.length > 0 ? avgCpaSamples.reduce((sum, c) => sum + c.cpa, 0) / avgCpaSamples.length : 0;
 
   const visible = gradeFilter === 'all' ? scored : scored.filter((c) => c.grade === gradeFilter);
 
