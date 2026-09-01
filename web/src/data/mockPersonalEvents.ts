@@ -8,4 +8,5 @@ export const mockPersonalEvents: PersonalCalendarEvent[] = [
   { id: 'seed-5', title: '토스페이먼츠 정산', desc: '', start: '2026-09-02', end: '2026-09-02', color: '#FB923C', startTime: '10:00', endTime: '11:00' },
   { id: 'seed-6', title: '연차 · 지은,종민', desc: '', start: '2026-09-04', end: '2026-09-04', color: '#4ADE80', startTime: '09:00', endTime: '18:00' },
   { id: 'seed-7', title: 'Meta 소재 교체 리뷰', desc: '', start: '2026-09-08', end: '2026-09-08', color: '#F87171', startTime: '15:00', endTime: '16:00' },
+  { id: 'seed-8', title: 'T1런 부스 참가', desc: '', start: '2026-09-15', end: '2026-09-17', color: '#C084FC', startTime: '10:00', endTime: '17:00' },
 ];
