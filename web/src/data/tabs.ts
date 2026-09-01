@@ -1,6 +1,7 @@
 import {
   BoxesIcon,
   CalendarDaysIcon,
+  ImagesIcon,
   LayoutDashboardIcon,
   type LucideIcon,
   MegaphoneIcon,
@@ -19,6 +20,7 @@ export interface TabConfig {
 export const TABS: TabConfig[] = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboardIcon },
   { id: 'marketing', label: '마케팅', icon: MegaphoneIcon },
+  { id: 'ad-performance', label: '광고 성과 분석', icon: ImagesIcon },
   { id: 'calendar', label: '캠페인 캘린더', icon: CalendarDaysIcon },
   { id: 'pnl', label: '손익', icon: WalletIcon },
   { id: 'crm', label: 'CRM', icon: UsersIcon },

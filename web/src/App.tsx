@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Sidebar } from './components/layout/Sidebar';
 import { OverviewTab } from './components/overview/OverviewTab';
 import { MarketingTab } from './components/marketing/MarketingTab';
+import { AdPerformanceTab } from './components/marketing/AdPerformanceTab';
 import { CalendarTab } from './components/calendar/CalendarTab';
 import { PnlTab } from './components/pnl/PnlTab';
 import { CrmTab } from './components/crm/CrmTab';
@@ -14,6 +15,7 @@ import { useTheme } from './hooks/useTheme';
 const TAB_COMPONENTS: Record<string, () => React.JSX.Element> = {
   overview: OverviewTab,
   marketing: MarketingTab,
+  'ad-performance': AdPerformanceTab,
   calendar: CalendarTab,
   pnl: PnlTab,
   crm: CrmTab,
