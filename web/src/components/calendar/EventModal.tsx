@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Trash2Icon, XIcon } from 'lucide-react';
 import { EVENT_COLORS, timeOptions } from './personalCalendarLogic';
 
@@ -30,6 +30,11 @@ function dayCount(start: string, end: string): number {
 
 export function EventModal({ draft: initialDraft, isEditing, onCancel, onSave, onDelete }: EventModalProps) {
   const [draft, setDraft] = useState<EventModalDraft>(initialDraft);
+  // Tracks whether the mousedown that led to the current click also started on the backdrop
+  // itself — without this, selecting text inside the modal and releasing the drag outside it
+  // fires a click on the backdrop (the nearest common ancestor of mousedown/mouseup targets)
+  // and would incorrectly close the modal, discarding the in-progress edit.
+  const backdropMouseDown = useRef(false);
 
   useEffect(() => {
     setDraft(initialDraft);
@@ -37,11 +42,20 @@ export function EventModal({ draft: initialDraft, isEditing, onCancel, onSave, o
 
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') onCancel();
+      if (e.key === 'Escape' && !e.isComposing) onCancel();
     }
     document.addEventListener('keydown', handleKey);
     return () => document.removeEventListener('keydown', handleKey);
   }, [onCancel]);
+
+  function handleBackdropMouseDown(e: React.MouseEvent<HTMLDivElement>) {
+    backdropMouseDown.current = e.target === e.currentTarget;
+  }
+
+  function handleBackdropClick(e: React.MouseEvent<HTMLDivElement>) {
+    if (e.target === e.currentTarget && backdropMouseDown.current) onCancel();
+    backdropMouseDown.current = false;
+  }
 
   function handleDateChange(field: 'start' | 'end', value: string) {
     setDraft((prev) => {
@@ -62,7 +76,11 @@ export function EventModal({ draft: initialDraft, isEditing, onCancel, onSave, o
   const days = dayCount(draft.start, draft.end);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onCancel}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+      onMouseDown={handleBackdropMouseDown}
+      onClick={handleBackdropClick}
+    >
       <div
         className="flex w-full max-w-[640px] overflow-hidden rounded-2xl bg-surface shadow-2xl"
         onClick={(e) => e.stopPropagation()}
