@@ -1,0 +1,125 @@
+import type { PersonalCalendarEvent } from '../../lib/types';
+
+export const WEEKDAY_LABELS = ['월', '화', '수', '목', '금'] as const;
+export const MAX_VISIBLE_LANES = 3;
+
+export interface MonthDayCell {
+  day: number;
+  col: number; // 0=Mon .. 4=Fri
+  iso: string;
+}
+
+export type MonthWeekRow = (MonthDayCell | null)[]; // always length 5
+
+/** Builds Mon-Fri-only week rows for a given month (weekends are dropped — this is a work-
+ * schedule calendar, ported from the legacy index.html calendar which does the same). */
+export function buildMonthWeekRows(year: number, month: number): MonthWeekRow[] {
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const rows: MonthWeekRow[] = [];
+  let currentRow: MonthWeekRow = new Array(5).fill(null);
+  let started = false;
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const weekday = new Date(year, month - 1, day).getDay(); // 0=Sun .. 6=Sat
+    if (weekday === 0 || weekday === 6) continue;
+    const col = weekday - 1; // Mon=0 .. Fri=4
+    if (col === 0 && started) {
+      rows.push(currentRow);
+      currentRow = new Array(5).fill(null);
+    }
+    currentRow[col] = { day, col, iso: isoDate(year, month, day) };
+    started = true;
+  }
+  if (started) rows.push(currentRow);
+  return rows;
+}
+
+export function isoDate(year: number, month: number, day: number): string {
+  return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+}
+
+export interface PlacedEventBar {
+  event: PersonalCalendarEvent;
+  colStart: number;
+  colEnd: number;
+  lane: number;
+  roundLeft: boolean;
+  roundRight: boolean;
+}
+
+/** Places every event overlapping a week row into non-overlapping lanes (greedy first-fit —
+ * same algorithm as the legacy calendar). Returns ALL placements, including lanes >=
+ * MAX_VISIBLE_LANES; callers filter to `lane < MAX_VISIBLE_LANES` for the bars they render and
+ * use `eventsOnDay()` for the "+N more" overflow count. */
+export function placeEventBars(weekRow: MonthWeekRow, events: PersonalCalendarEvent[]): PlacedEventBar[] {
+  const weekDays = weekRow.filter((c): c is MonthDayCell => c !== null);
+  const lanes: { colStart: number; colEnd: number }[][] = [];
+  const placed: PlacedEventBar[] = [];
+
+  for (const event of events) {
+    const overlap = weekDays.filter((wd) => wd.iso >= event.start && wd.iso <= event.end);
+    if (overlap.length === 0) continue;
+    const colStart = overlap[0].col;
+    const colEnd = overlap[overlap.length - 1].col;
+    let lane = lanes.findIndex((l) => !l.some((o) => !(colEnd < o.colStart || colStart > o.colEnd)));
+    if (lane === -1) {
+      lane = lanes.length;
+      lanes.push([]);
+    }
+    lanes[lane].push({ colStart, colEnd });
+    placed.push({
+      event,
+      colStart,
+      colEnd,
+      lane,
+      roundLeft: overlap[0].iso === event.start,
+      roundRight: overlap[overlap.length - 1].iso === event.end,
+    });
+  }
+  return placed;
+}
+
+/** Every event covering a given day, from the full events list (not week-scoped). */
+export function eventsOnDay(iso: string, events: PersonalCalendarEvent[]): PersonalCalendarEvent[] {
+  return events.filter((e) => iso >= e.start && iso <= e.end);
+}
+
+/** 06:00-23:30 in 30-minute steps, matching the legacy calendar's time picker range. */
+export function timeOptions(): string[] {
+  const opts: string[] = [];
+  for (let h = 6; h < 24; h++) {
+    for (let m = 0; m < 60; m += 30) {
+      opts.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
+    }
+  }
+  return opts;
+}
+
+export const EVENT_COLORS = [
+  { name: '그레이', value: '#9CA3AF' },
+  { name: '블루', value: '#60A5FA' },
+  { name: '그린', value: '#4ADE80' },
+  { name: '퍼플', value: '#C084FC' },
+  { name: '오렌지', value: '#FB923C' },
+  { name: '레드', value: '#F87171' },
+] as const;
+
+/** Monday of the work week containing `date`. */
+export function startOfWorkWeek(date: Date): Date {
+  const d = new Date(date);
+  const weekday = d.getDay(); // 0=Sun..6=Sat
+  const diffToMonday = weekday === 0 ? -6 : 1 - weekday;
+  d.setDate(d.getDate() + diffToMonday);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+export function addDays(date: Date, days: number): Date {
+  const d = new Date(date);
+  d.setDate(d.getDate() + days);
+  return d;
+}
+
+export function dateToISO(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
