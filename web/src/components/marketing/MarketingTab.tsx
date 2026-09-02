@@ -16,15 +16,17 @@ import {
 } from '../../lib/dateRange';
 import { formatKRW, formatPercent } from '../../lib/format';
 import { TODAY, adSpendMonthToDate } from '../../data/mockOverview';
+import { MARKETING_CHANNELS, marketingDailySeries as mockMarketingDailySeries } from '../../data/mockMarketing';
+import { useDashboardData } from '../../hooks/useDashboardData';
 import {
-  MARKETING_CHANNELS,
-  channelSeries,
-  totalAdSpendSeries,
-  totalAttributedRevenueSeries,
-  totalCpaSeries,
-  totalConversionsSeries,
-  totalRoasSeries,
-} from '../../data/mockMarketing';
+  channelSeriesFrom,
+  mergeMarketingDaily,
+  totalAdSpendSeriesFrom,
+  totalAttributedRevenueSeriesFrom,
+  totalConversionsSeriesFrom,
+  totalCpaSeriesFrom,
+  totalRoasSeriesFrom,
+} from '../../lib/marketingSeries';
 
 function trailingWindow<T extends { date: string }>(series: T[], endDate: string, n: number): T[] {
   return series.filter((p) => p.date <= endDate).slice(-n);
@@ -37,19 +39,36 @@ function formatRoas(roas: number): string {
 
 export function MarketingTab() {
   const { settings } = useSettings();
+  const { data } = useDashboardData();
   const [preset, setPreset] = useState<RangePreset>('30d');
   const [customRange, setCustomRange] = useState<DateRange>(() => getPresetRange('7d', TODAY));
 
   const range = useMemo(() => getPresetRange(preset, TODAY, customRange), [preset, customRange]);
   const prevRange = useMemo(() => getPreviousRange(range), [range]);
 
+  const dailyRows = useMemo(
+    () => (data ? mergeMarketingDaily(data.marketingDaily) : mockMarketingDailySeries),
+    [data],
+  );
+  const totalAdSpendSeries = useMemo(() => totalAdSpendSeriesFrom(dailyRows), [dailyRows]);
+  const totalAttributedRevenueSeries = useMemo(() => totalAttributedRevenueSeriesFrom(dailyRows), [dailyRows]);
+  const totalConversionsSeries = useMemo(() => totalConversionsSeriesFrom(dailyRows), [dailyRows]);
+  const totalRoasSeries = useMemo(
+    () => totalRoasSeriesFrom(totalAdSpendSeries, totalAttributedRevenueSeries),
+    [totalAdSpendSeries, totalAttributedRevenueSeries],
+  );
+  const totalCpaSeries = useMemo(
+    () => totalCpaSeriesFrom(totalAdSpendSeries, totalConversionsSeries),
+    [totalAdSpendSeries, totalConversionsSeries],
+  );
+
   // Per-channel spend/revenue/conversions summed over the selected range -> per-channel ROAS/CPA.
   const channelStats = useMemo(
     () =>
       MARKETING_CHANNELS.map((channel) => {
-        const spend = aggregate(filterSeries(channelSeries(channel, 'spend'), range), 'sum');
-        const revenue = aggregate(filterSeries(channelSeries(channel, 'revenue'), range), 'sum');
-        const conversions = aggregate(filterSeries(channelSeries(channel, 'conversions'), range), 'sum');
+        const spend = aggregate(filterSeries(channelSeriesFrom(dailyRows, channel, 'spend'), range), 'sum');
+        const revenue = aggregate(filterSeries(channelSeriesFrom(dailyRows, channel, 'revenue'), range), 'sum');
+        const conversions = aggregate(filterSeries(channelSeriesFrom(dailyRows, channel, 'conversions'), range), 'sum');
         return {
           channel,
           spend,
@@ -59,7 +78,7 @@ export function MarketingTab() {
           cpa: conversions > 0 ? spend / conversions : 0,
         };
       }),
-    [range],
+    [dailyRows, range],
   );
 
   const totalSpend = aggregate(filterSeries(totalAdSpendSeries, range), 'sum');

@@ -23,15 +23,15 @@ import {
   CHANNELS,
   TODAY,
   adSpendMonthToDate,
-  channelRevenueSeries,
   inventory,
   newCustomersSeries,
   ordersSeries,
   productSales,
   repeatRateSeries,
-  totalRevenueSeries,
   upcomingEvents,
 } from '../../data/mockOverview';
+import { useDashboardData } from '../../hooks/useDashboardData';
+import { mergeChannelRevenue, totalRevenueSeriesFrom } from '../../lib/salesSeries';
 
 const RANGE_LABELS: Record<RangePreset, string> = {
   today: '오늘',
@@ -46,13 +46,20 @@ function trailingWindow<T extends { date: string }>(series: T[], endDate: string
 
 export function OverviewTab() {
   const { settings } = useSettings();
+  const { data } = useDashboardData();
   const [preset, setPreset] = useState<RangePreset>('30d');
   const [customRange, setCustomRange] = useState<DateRange>(() => getPresetRange('7d', TODAY));
 
   const range = useMemo(() => getPresetRange(preset, TODAY, customRange), [preset, customRange]);
   const prevRange = useMemo(() => getPreviousRange(range), [range]);
 
-  const revenueSeries = useMemo(() => filterSeries(totalRevenueSeries, range), [range]);
+  const channelRevenueSeries = useMemo(
+    () => (data ? mergeChannelRevenue(data.channelRevenue) : mergeChannelRevenue([])),
+    [data],
+  );
+  const totalRevenueSeries = useMemo(() => totalRevenueSeriesFrom(channelRevenueSeries), [channelRevenueSeries]);
+
+  const revenueSeries = useMemo(() => filterSeries(totalRevenueSeries, range), [range, totalRevenueSeries]);
   const total = aggregate(revenueSeries, 'sum');
   const prevTotal = aggregate(filterSeries(totalRevenueSeries, prevRange), 'sum');
   const changePct = percentChange(total, prevTotal);
@@ -60,7 +67,7 @@ export function OverviewTab() {
   const monthStart = `${TODAY.toISOString().slice(0, 7)}-01`;
   const monthToDate = useMemo(
     () => aggregate(filterSeries(totalRevenueSeries, { start: monthStart, end: TODAY.toISOString().slice(0, 10) }), 'sum'),
-    [monthStart],
+    [monthStart, totalRevenueSeries],
   );
 
   const channelShare = useMemo(
@@ -75,7 +82,7 @@ export function OverviewTab() {
           'sum',
         ),
       })).sort((a, b) => b.revenue - a.revenue),
-    [range],
+    [range, channelRevenueSeries],
   );
 
   const orders = aggregate(filterSeries(ordersSeries, range), 'sum');
