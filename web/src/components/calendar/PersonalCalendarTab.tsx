@@ -7,8 +7,11 @@ import { WeekGrid } from './WeekGrid';
 import { ReminderStrip } from './ReminderStrip';
 import { EVENT_COLORS, addDays, dateToISO, startOfWorkWeek } from './personalCalendarLogic';
 import { usePersonalCalendarStore } from '../../hooks/usePersonalCalendarStore';
-import { TODAY } from '../../data/mockOverview';
 import type { PersonalCalendarEvent } from '../../lib/types';
+
+// Unlike the other tabs, the personal calendar isn't anchored to the frozen mock-data "TODAY"
+// (2026-09-01) — it must reflect the real current date every time the page loads.
+const TODAY = new Date();
 
 // Local-time extraction (not toISOString()/getUTC*), to stay on the same date axis as
 // personalCalendarLogic.ts's addDays/startOfWorkWeek/dateToISO — WeekGrid builds its day
