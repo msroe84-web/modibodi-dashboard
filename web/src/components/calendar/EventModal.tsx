@@ -101,6 +101,9 @@ export function EventModal({ draft: initialDraft, isEditing, onCancel, onSave, o
               type="text"
               value={draft.title}
               onChange={(e) => setDraft((prev) => ({ ...prev, title: e.target.value }))}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.nativeEvent.isComposing) handleSave();
+              }}
               placeholder="제목을 입력하세요"
               autoFocus
               className="w-full rounded-lg border border-hairline bg-surface-sunken px-3 py-2 text-[13px] text-ink outline-none focus:border-ink-secondary"
