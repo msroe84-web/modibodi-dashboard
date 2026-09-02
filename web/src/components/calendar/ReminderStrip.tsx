@@ -6,8 +6,11 @@ interface ReminderStripProps {
 }
 
 export function ReminderStrip({ events, todayIso }: ReminderStripProps) {
+  // Filtering by e.end (not e.start) so a multi-day event that's already under way today
+  // still shows up — a strip titled "다가오는 일정" should include things you still need to
+  // show up for, not just ones that haven't started yet.
   const upcoming = events
-    .filter((e) => e.start >= todayIso)
+    .filter((e) => e.end >= todayIso)
     .sort((a, b) => a.start.localeCompare(b.start))
     .slice(0, 8);
 
