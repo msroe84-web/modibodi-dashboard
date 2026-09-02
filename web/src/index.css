@@ -1,0 +1,180 @@
+@import "tailwindcss";
+@import "@fontsource/noto-sans-kr/400.css";
+@import "@fontsource/noto-sans-kr/500.css";
+@import "@fontsource/noto-sans-kr/700.css";
+@import "@fontsource/noto-sans-kr/900.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+@import "@fontsource/ibm-plex-mono/600.css";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ---- Design tokens ---------------------------------------------------- */
+:root {
+  color-scheme: light;
+
+  /* base (page chrome: sidebar, page background) */
+  --bg-page: #f9f9f7;
+  --bg-surface: #ffffff;
+  --bg-surface-sunken: #f4f3f0;
+  --text-primary: #0b0b0b;
+  --text-secondary: #57564f;
+  --text-muted: #8b897f;
+  --border-hairline: #e6e4dd;
+  --border-hairline-strong: #d8d6cd;
+
+  /* accent - primary (chrome fills / active states: black+silver, not brand orange) */
+  --accent-primary: #17171a;
+  --accent-primary-ink: #000000;
+  --accent-primary-soft: #e7e7e9;
+
+  /* accent - secondary (non-headline emphasis) */
+  --accent-secondary: #6b6e76;
+  --accent-secondary-ink: #45474d;
+  --accent-secondary-soft: #eceded;
+
+  /* status (fixed, never themed) */
+  --status-good: #0ca30c;
+  --status-critical: #d03b3b;
+  --status-warning: #c98500;
+  --status-info: #2a78d6;
+
+  --shadow-card: 0 1px 2px rgba(11, 11, 11, 0.04), 0 8px 24px -12px rgba(11, 11, 11, 0.10);
+  --shadow-card-hover: 0 2px 4px rgba(11, 11, 11, 0.06), 0 16px 32px -12px rgba(11, 11, 11, 0.16);
+}
+
+:root:where(:not([data-theme="light"])) {
+  @media (prefers-color-scheme: dark) {
+    color-scheme: dark;
+    --bg-page: #0c0c0d;
+    --bg-surface: #17181a;
+    --bg-surface-sunken: #111213;
+    --text-primary: #f7f6f3;
+    --text-secondary: #b9b7ae;
+    --text-muted: #83817a;
+    --border-hairline: #2a2b2d;
+    --border-hairline-strong: #38393b;
+
+    --accent-primary: #e4e4e7;
+    --accent-primary-ink: #ffffff;
+    --accent-primary-soft: #303033;
+
+    --accent-secondary: #a1a1aa;
+    --accent-secondary-ink: #d4d4d8;
+    --accent-secondary-soft: #2b2b2e;
+
+    --status-good: #2fc02f;
+    --status-critical: #e66767;
+    --status-warning: #d99a2b;
+    --status-info: #3987e5;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg-page: #0c0c0d;
+  --bg-surface: #17181a;
+  --bg-surface-sunken: #111213;
+  --text-primary: #f7f6f3;
+  --text-secondary: #b9b7ae;
+  --text-muted: #83817a;
+  --border-hairline: #2a2b2d;
+  --border-hairline-strong: #38393b;
+
+  --accent-primary: #e4e4e7;
+  --accent-primary-ink: #ffffff;
+  --accent-primary-soft: #303033;
+
+  --accent-secondary: #a1a1aa;
+  --accent-secondary-ink: #d4d4d8;
+  --accent-secondary-soft: #2b2b2e;
+
+  --status-good: #2fc02f;
+  --status-critical: #e66767;
+  --status-warning: #d99a2b;
+  --status-info: #3987e5;
+}
+
+/* ---- "Box"/chart-card system — always dark, gradient-bordered, fixed ---
+   (not theme-toggled: every chart/stat/info card uses this regardless of
+   light/dark page mode, per the modibodi gradient-card design direction) */
+:root {
+  --card-bg-1: #08080a;
+  --card-bg-2: #1a1a1e;
+  --card-border-grad: linear-gradient(71deg, #0c0c0e, #c6c9d1, #0c0c0e);
+  --card-silver: #cfd2d9;
+  --card-silver-bright: #f2f3f5;
+  --card-silver-dim: #8b8e97;
+  --card-text: #ffffff;
+  --card-text-secondary: rgba(255, 255, 255, 0.55);
+  --card-text-muted: rgba(255, 255, 255, 0.38);
+  --card-hairline: rgba(255, 255, 255, 0.08);
+
+  --card-good: #2fc02f;
+  --card-critical: #e66767;
+  --card-warning: #d99a2b;
+  --card-info: #3987e5;
+
+  /* categorical chart palette (validated, dataviz default order — dark-surface steps) */
+  --card-series-1: #3987e5;
+  --card-series-2: #d95926;
+  --card-series-3: #199e70;
+  --card-series-4: #c98500;
+  --card-series-5: #d55181;
+  --card-series-6: #9085e9;
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 28px -10px rgba(0, 0, 0, 0.55);
+  --shadow-card-hover: 0 2px 6px rgba(0, 0, 0, 0.5), 0 20px 40px -10px rgba(0, 0, 0, 0.7);
+}
+
+@theme inline {
+  --color-page: var(--bg-page);
+  --color-surface: var(--bg-surface);
+  --color-surface-sunken: var(--bg-surface-sunken);
+  --color-ink: var(--text-primary);
+  --color-ink-secondary: var(--text-secondary);
+  --color-ink-muted: var(--text-muted);
+  --color-hairline: var(--border-hairline);
+  --color-hairline-strong: var(--border-hairline-strong);
+
+  --color-primary: var(--accent-primary);
+  --color-primary-ink: var(--accent-primary-ink);
+  --color-primary-soft: var(--accent-primary-soft);
+  --color-secondary: var(--accent-secondary);
+  --color-secondary-ink: var(--accent-secondary-ink);
+  --color-secondary-soft: var(--accent-secondary-soft);
+
+  --color-good: var(--status-good);
+  --color-critical: var(--status-critical);
+  --color-warning: var(--status-warning);
+  --color-info: var(--status-info);
+
+  --color-card-good: var(--card-good);
+  --color-card-critical: var(--card-critical);
+  --color-card-warning: var(--card-warning);
+  --color-card-info: var(--card-info);
+  --color-card-text: var(--card-text);
+  --color-card-silver: var(--card-silver);
+  --color-card-hairline: var(--card-hairline);
+
+  --font-sans: "Noto Sans KR", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+body {
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.num-mono {
+  font-variant-numeric: tabular-nums;
+}
+
+.card-shadow {
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 160ms ease;
+}
+.card-shadow:hover {
+  box-shadow: var(--shadow-card-hover);
+}
