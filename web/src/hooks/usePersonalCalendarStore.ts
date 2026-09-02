@@ -35,6 +35,8 @@ export interface EventSaveInput {
   color: string;
   startTime: string;
   endTime: string;
+  contentWidth?: number;
+  contentHeight?: number;
 }
 
 /** Events sync through the same shared Apps Script backend as the rest of the dashboard, so they

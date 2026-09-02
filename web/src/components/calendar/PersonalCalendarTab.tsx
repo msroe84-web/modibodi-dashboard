@@ -43,6 +43,8 @@ function draftFromEvent(event: PersonalCalendarEvent): EventModalDraft {
     color: event.color,
     startTime: event.startTime,
     endTime: event.endTime,
+    contentWidth: event.contentWidth,
+    contentHeight: event.contentHeight,
   };
 }
 
