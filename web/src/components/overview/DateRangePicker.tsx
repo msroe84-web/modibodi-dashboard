@@ -24,7 +24,7 @@ export function DateRangePicker({ preset, onChangePreset, customRange, onChangeC
             type="button"
             onClick={() => onChangePreset(p.id)}
             className={`rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors ${
-              preset === p.id ? 'bg-primary text-white' : 'text-ink-secondary hover:bg-surface-sunken hover:text-ink'
+              preset === p.id ? 'bg-primary text-page' : 'text-ink-secondary hover:bg-surface-sunken hover:text-ink'
             }`}
           >
             {p.label}
