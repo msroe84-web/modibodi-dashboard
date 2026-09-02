@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Trash2Icon, XIcon } from 'lucide-react';
+import { DatePickerField } from './DatePickerField';
+import { TimeSelectField } from './TimeSelectField';
 import { EVENT_COLORS, timeOptions } from './personalCalendarLogic';
 
 export interface EventModalDraft {
@@ -82,10 +84,10 @@ export function EventModal({ draft: initialDraft, isEditing, onCancel, onSave, o
       onClick={handleBackdropClick}
     >
       <div
-        className="flex w-full max-w-[640px] overflow-hidden rounded-2xl bg-surface shadow-2xl"
+        className="flex w-full max-w-[860px] overflow-visible rounded-2xl bg-surface shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex-1 space-y-3 p-6">
+        <div className="w-[380px] shrink-0 space-y-3 p-6">
           <div className="flex items-center justify-between">
             <h3 className="text-[16px] font-bold text-ink">{isEditing ? '일정 수정' : '일정 추가'}</h3>
             <button type="button" onClick={onCancel} className="text-ink-muted hover:text-ink">
@@ -108,19 +110,9 @@ export function EventModal({ draft: initialDraft, isEditing, onCancel, onSave, o
           <div>
             <label className="mb-1 block text-[12px] font-semibold text-ink-secondary">날짜</label>
             <div className="flex items-center gap-2">
-              <input
-                type="date"
-                value={draft.start}
-                onChange={(e) => handleDateChange('start', e.target.value)}
-                className="rounded-lg border border-hairline bg-surface-sunken px-3 py-2 text-[13px] text-ink outline-none"
-              />
+              <DatePickerField value={draft.start} onChange={(iso) => handleDateChange('start', iso)} />
               <span className="text-ink-muted">–</span>
-              <input
-                type="date"
-                value={draft.end}
-                onChange={(e) => handleDateChange('end', e.target.value)}
-                className="rounded-lg border border-hairline bg-surface-sunken px-3 py-2 text-[13px] text-ink outline-none"
-              />
+              <DatePickerField value={draft.end} onChange={(iso) => handleDateChange('end', iso)} />
             </div>
             {days > 1 && <p className="mt-1 text-[11px] text-ink-muted">{days}일간</p>}
           </div>
@@ -128,29 +120,17 @@ export function EventModal({ draft: initialDraft, isEditing, onCancel, onSave, o
           <div>
             <label className="mb-1 block text-[12px] font-semibold text-ink-secondary">시간</label>
             <div className="flex items-center gap-2">
-              <select
+              <TimeSelectField
                 value={draft.startTime}
-                onChange={(e) => setDraft((prev) => ({ ...prev, startTime: e.target.value }))}
-                className="rounded-lg border border-hairline bg-surface-sunken px-3 py-2 text-[13px] text-ink outline-none"
-              >
-                {TIME_OPTIONS.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
-                  </option>
-                ))}
-              </select>
+                options={TIME_OPTIONS}
+                onChange={(t) => setDraft((prev) => ({ ...prev, startTime: t }))}
+              />
               <span className="text-ink-muted">–</span>
-              <select
+              <TimeSelectField
                 value={draft.endTime}
-                onChange={(e) => setDraft((prev) => ({ ...prev, endTime: e.target.value }))}
-                className="rounded-lg border border-hairline bg-surface-sunken px-3 py-2 text-[13px] text-ink outline-none"
-              >
-                {TIME_OPTIONS.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
-                  </option>
-                ))}
-              </select>
+                options={TIME_OPTIONS}
+                onChange={(t) => setDraft((prev) => ({ ...prev, endTime: t }))}
+              />
             </div>
           </div>
 
@@ -200,13 +180,16 @@ export function EventModal({ draft: initialDraft, isEditing, onCancel, onSave, o
           </div>
         </div>
 
-        <div className="w-[220px] border-l border-hairline bg-surface-sunken p-6">
-          <label className="mb-2 block text-[12px] font-semibold text-ink-secondary">내용</label>
+        <div
+          className="flex w-[320px] shrink-0 resize flex-col overflow-auto border-l border-hairline bg-surface-sunken p-6"
+          style={{ minWidth: 220, minHeight: 280, maxWidth: 600, maxHeight: 640 }}
+        >
+          <label className="mb-2 block shrink-0 text-[12px] font-semibold text-ink-secondary">내용</label>
           <textarea
             value={draft.desc}
             onChange={(e) => setDraft((prev) => ({ ...prev, desc: e.target.value }))}
             placeholder="회의/미팅 관련 내용을 자유롭게 정리해두세요"
-            className="h-full min-h-[220px] w-full resize-y rounded-lg border border-hairline bg-surface p-3 text-[13px] text-ink outline-none"
+            className="w-full flex-1 resize-none rounded-lg border border-hairline bg-surface p-3 text-[13px] text-ink outline-none"
           />
         </div>
       </div>
