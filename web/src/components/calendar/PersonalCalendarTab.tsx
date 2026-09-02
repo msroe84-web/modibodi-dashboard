@@ -4,14 +4,18 @@ import { EventModal, type EventModalDraft } from './EventModal';
 import { MonthGrid } from './MonthGrid';
 import { WeekGrid } from './WeekGrid';
 import { ReminderStrip } from './ReminderStrip';
-import { EVENT_COLORS, addDays, startOfWorkWeek } from './personalCalendarLogic';
+import { EVENT_COLORS, addDays, dateToISO, startOfWorkWeek } from './personalCalendarLogic';
 import { usePersonalCalendarStore } from '../../hooks/usePersonalCalendarStore';
 import { TODAY } from '../../data/mockOverview';
 import type { PersonalCalendarEvent } from '../../lib/types';
 
-const TODAY_ISO = TODAY.toISOString().slice(0, 10);
-const TODAY_YEAR = TODAY.getUTCFullYear();
-const TODAY_MONTH = TODAY.getUTCMonth() + 1;
+// Local-time extraction (not toISOString()/getUTC*), to stay on the same date axis as
+// personalCalendarLogic.ts's addDays/startOfWorkWeek/dateToISO — WeekGrid builds its day
+// cells from those, and mixing UTC "today" with a locally-built week can point isToday and
+// the month/week views at different calendar days near a UTC/local day boundary.
+const TODAY_ISO = dateToISO(TODAY);
+const TODAY_YEAR = TODAY.getFullYear();
+const TODAY_MONTH = TODAY.getMonth() + 1;
 
 function blankDraft(startIso: string, endIso: string): EventModalDraft {
   return {
