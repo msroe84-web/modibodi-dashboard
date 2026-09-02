@@ -1,4 +1,4 @@
-import { WEEKDAY_LABELS, addDays, dateToISO } from './personalCalendarLogic';
+import { WEEKDAY_LABELS, addDays, dateToISO, eventsOnDay } from './personalCalendarLogic';
 import type { PersonalCalendarEvent } from '../../lib/types';
 
 interface WeekGridProps {
@@ -18,7 +18,7 @@ export function WeekGrid({ weekStart, events, todayIso, onSelectDay, onEditEvent
   return (
     <div className="grid grid-cols-5 overflow-hidden rounded-2xl border border-hairline">
       {days.map((d) => {
-        const dayEvents = events.filter((e) => d.iso >= e.start && d.iso <= e.end);
+        const dayEvents = eventsOnDay(d.iso, events);
         const isToday = d.iso === todayIso;
         return (
           <div key={d.iso} className="min-h-[360px] border-r border-hairline last:border-r-0">
