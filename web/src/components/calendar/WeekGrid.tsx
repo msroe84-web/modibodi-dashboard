@@ -46,9 +46,11 @@ export function WeekGrid({ weekStart, events, todayIso, onSelectDay, onEditEvent
                   style={{ color: e.color, backgroundColor: `${e.color}22`, border: `1px solid ${e.color}66` }}
                 >
                   {e.title}
-                  <span className="ml-1 block text-[10px] font-normal opacity-80">
-                    {e.startTime}–{e.endTime}
-                  </span>
+                  {e.startTime && (
+                    <span className="ml-1 block text-[10px] font-normal opacity-80">
+                      {e.startTime}–{e.endTime}
+                    </span>
+                  )}
                 </button>
               ))}
             </div>

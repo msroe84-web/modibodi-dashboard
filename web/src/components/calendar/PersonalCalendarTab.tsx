@@ -28,8 +28,8 @@ function blankDraft(startIso: string, endIso: string): EventModalDraft {
     start: startIso,
     end: endIso,
     color: EVENT_COLORS[0].value,
-    startTime: '10:00',
-    endTime: '11:00',
+    startTime: '',
+    endTime: '',
   };
 }
 

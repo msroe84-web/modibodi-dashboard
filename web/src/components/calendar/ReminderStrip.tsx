@@ -39,9 +39,11 @@ export function ReminderStrip({ events, todayIso }: ReminderStripProps) {
               {dateLabel}
             </p>
             <p className="truncate text-[12.5px] font-bold text-card-text">{e.title}</p>
-            <p className="mt-0.5 text-[10.5px] text-white/40">
-              {e.startTime} – {e.endTime}
-            </p>
+            {e.startTime && (
+              <p className="mt-0.5 text-[10.5px] text-white/40">
+                {e.startTime} – {e.endTime}
+              </p>
+            )}
           </div>
         );
       })}
