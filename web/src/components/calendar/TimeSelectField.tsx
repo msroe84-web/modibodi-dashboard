@@ -45,6 +45,19 @@ export function TimeSelectField({ value, options, onChange }: TimeSelectFieldPro
           ref={listRef}
           className="absolute left-0 top-full z-30 mt-1 max-h-56 w-28 overflow-y-auto rounded-xl border border-hairline bg-surface p-1 shadow-2xl"
         >
+          <button
+            type="button"
+            data-selected={value === ''}
+            onClick={() => {
+              onChange('');
+              setOpen(false);
+            }}
+            className={`mb-1 block w-full rounded-lg border-b border-hairline px-3 py-1.5 text-left text-[13px] ${
+              value === '' ? 'bg-primary font-semibold text-page' : 'text-ink-muted hover:bg-surface-sunken'
+            }`}
+          >
+            선택 없음
+          </button>
           {options.map((t) => (
             <button
               key={t}
