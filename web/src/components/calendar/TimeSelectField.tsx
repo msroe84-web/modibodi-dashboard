@@ -37,7 +37,7 @@ export function TimeSelectField({ value, options, onChange }: TimeSelectFieldPro
         className="flex items-center gap-2 rounded-lg border border-hairline bg-surface-sunken px-3 py-2 text-[13px] text-ink outline-none hover:border-ink-secondary"
       >
         <ClockIcon size={14} className="text-ink-muted" />
-        {value}
+        {value || <span className="text-ink-muted">시간 선택</span>}
         <ChevronDownIcon size={12} className="text-ink-muted" />
       </button>
       {open && (
