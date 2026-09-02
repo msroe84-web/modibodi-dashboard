@@ -8,6 +8,7 @@ import { PnlTab } from './components/pnl/PnlTab';
 import { CrmTab } from './components/crm/CrmTab';
 import { MdTab } from './components/md/MdTab';
 import { InventoryTab } from './components/inventory/InventoryTab';
+import { PersonalCalendarTab } from './components/calendar/PersonalCalendarTab';
 import { SettingsTab } from './components/settings/SettingsTab';
 import { SettingsProvider } from './context/SettingsContext';
 import { useTheme } from './hooks/useTheme';
@@ -21,6 +22,7 @@ const TAB_COMPONENTS: Record<string, () => React.JSX.Element> = {
   crm: CrmTab,
   md: MdTab,
   inventory: InventoryTab,
+  'personal-calendar': PersonalCalendarTab,
   settings: SettingsTab,
 };
 

@@ -1,6 +1,7 @@
 import {
   BoxesIcon,
   CalendarDaysIcon,
+  CalendarRangeIcon,
   ImagesIcon,
   LayoutDashboardIcon,
   type LucideIcon,
@@ -26,5 +27,6 @@ export const TABS: TabConfig[] = [
   { id: 'crm', label: 'CRM', icon: UsersIcon },
   { id: 'md', label: 'MD·상품', icon: ShirtIcon },
   { id: 'inventory', label: '재고', icon: BoxesIcon },
+  { id: 'personal-calendar', label: '일정관리', icon: CalendarRangeIcon },
   { id: 'settings', label: '설정', icon: SettingsIcon },
 ];
