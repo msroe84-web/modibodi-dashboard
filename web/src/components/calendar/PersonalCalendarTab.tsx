@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon, PlusIcon } from 'lucide-react';
+import { ChartCard } from '../ui/ChartCard';
 import { EventModal, type EventModalDraft } from './EventModal';
 import { MonthGrid } from './MonthGrid';
 import { WeekGrid } from './WeekGrid';
@@ -110,23 +111,23 @@ export function PersonalCalendarTab() {
         <button
           type="button"
           onClick={() => openAddModal(TODAY_ISO, TODAY_ISO)}
-          className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-[13px] font-semibold text-primary-ink hover:opacity-90"
+          className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-[13px] font-semibold text-page hover:opacity-90"
         >
           <PlusIcon size={14} />
           일정 추가
         </button>
       </div>
 
-      <div className="rounded-[22px] border border-hairline bg-surface card-shadow">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-hairline px-5 py-3.5">
-          <h2 className="text-[14px] font-bold text-ink">{rangeLabel}</h2>
+      <ChartCard
+        title={rangeLabel}
+        trailing={
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-0.5 rounded-lg border border-hairline bg-surface-sunken p-0.5">
+            <div className="flex items-center gap-0.5 rounded-lg border border-white/10 bg-white/5 p-0.5">
               <button
                 type="button"
                 onClick={() => setView('month')}
                 className={`rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
-                  view === 'month' ? 'bg-primary text-primary-ink' : 'text-ink-secondary hover:text-ink'
+                  view === 'month' ? 'bg-white/15 text-card-text' : 'text-white/50 hover:text-white/80'
                 }`}
               >
                 월간
@@ -135,46 +136,44 @@ export function PersonalCalendarTab() {
                 type="button"
                 onClick={() => setView('week')}
                 className={`rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
-                  view === 'week' ? 'bg-primary text-primary-ink' : 'text-ink-secondary hover:text-ink'
+                  view === 'week' ? 'bg-white/15 text-card-text' : 'text-white/50 hover:text-white/80'
                 }`}
               >
                 주간
               </button>
             </div>
-            <button type="button" onClick={goPrev} className="rounded-md p-1 text-ink-secondary hover:bg-surface-sunken hover:text-ink">
+            <button type="button" onClick={goPrev} className="rounded-md p-1 text-white/50 hover:bg-white/10 hover:text-white/90">
               <ChevronLeftIcon size={16} />
             </button>
-            <button type="button" onClick={goNext} className="rounded-md p-1 text-ink-secondary hover:bg-surface-sunken hover:text-ink">
+            <button type="button" onClick={goNext} className="rounded-md p-1 text-white/50 hover:bg-white/10 hover:text-white/90">
               <ChevronRightIcon size={16} />
             </button>
           </div>
-        </div>
-        <div className="p-4">
-          {view === 'month' ? (
-            <MonthGrid
-              year={curYear}
-              month={curMonth}
-              events={events}
-              todayIso={TODAY_ISO}
-              onSelectRange={openAddModal}
-              onEditEvent={openEditModal}
-            />
-          ) : (
-            <WeekGrid
-              weekStart={weekStart}
-              events={events}
-              todayIso={TODAY_ISO}
-              onSelectDay={(iso) => openAddModal(iso, iso)}
-              onEditEvent={openEditModal}
-            />
-          )}
-        </div>
-      </div>
+        }
+      >
+        {view === 'month' ? (
+          <MonthGrid
+            year={curYear}
+            month={curMonth}
+            events={events}
+            todayIso={TODAY_ISO}
+            onSelectRange={openAddModal}
+            onEditEvent={openEditModal}
+          />
+        ) : (
+          <WeekGrid
+            weekStart={weekStart}
+            events={events}
+            todayIso={TODAY_ISO}
+            onSelectDay={(iso) => openAddModal(iso, iso)}
+            onEditEvent={openEditModal}
+          />
+        )}
+      </ChartCard>
 
-      <div className="rounded-[22px] border border-hairline bg-surface p-4 card-shadow">
-        <p className="mb-2.5 text-[12px] font-bold uppercase tracking-wide text-ink-muted">⚡ 꼭 챙겨야 할 리마인드</p>
+      <ChartCard title="⚡ 꼭 챙겨야 할 리마인드">
         <ReminderStrip events={events} todayIso={TODAY_ISO} />
-      </div>
+      </ChartCard>
 
       {modalDraft && (
         <EventModal

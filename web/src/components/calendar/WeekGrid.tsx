@@ -16,21 +16,21 @@ export function WeekGrid({ weekStart, events, todayIso, onSelectDay, onEditEvent
   });
 
   return (
-    <div className="grid grid-cols-5 overflow-hidden rounded-2xl border border-hairline">
+    <div className="grid grid-cols-5 overflow-hidden rounded-2xl border border-card-hairline">
       {days.map((d) => {
         const dayEvents = eventsOnDay(d.iso, events);
         const isToday = d.iso === todayIso;
         return (
-          <div key={d.iso} className="min-h-[360px] border-r border-hairline last:border-r-0">
+          <div key={d.iso} className="min-h-[360px] border-r border-card-hairline last:border-r-0">
             <button
               type="button"
               onClick={() => onSelectDay(d.iso)}
-              className="flex w-full flex-col items-center gap-1 border-b border-hairline bg-surface-sunken py-2 hover:bg-surface"
+              className="flex w-full flex-col items-center gap-1 border-b border-card-hairline bg-white/5 py-2 hover:bg-white/10"
             >
-              <span className="text-[11px] font-semibold text-ink-muted">{d.label}</span>
+              <span className="text-[11px] font-semibold text-white/40">{d.label}</span>
               <span
                 className={`flex h-6 w-6 items-center justify-center rounded-full text-[12px] font-bold ${
-                  isToday ? 'bg-primary text-primary-ink' : 'text-ink'
+                  isToday ? 'bg-white text-[#0c0c0d]' : 'text-card-text'
                 }`}
               >
                 {d.day}

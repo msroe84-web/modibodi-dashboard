@@ -58,15 +58,15 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
 
   return (
     <div
-      className="select-none rounded-2xl border border-hairline"
+      className="select-none rounded-2xl border border-card-hairline"
       onMouseLeave={abortDrag}
       onMouseUp={handleMouseUp}
     >
-      <div className="grid grid-cols-5 border-b border-hairline bg-surface-sunken">
+      <div className="grid grid-cols-5 border-b border-card-hairline bg-white/5">
         {WEEKDAY_LABELS.map((d, i) => (
           <div
             key={d}
-            className={`py-2 text-center text-[11px] font-semibold text-ink-muted ${
+            className={`py-2 text-center text-[11px] font-semibold text-white/40 ${
               i === 0 ? 'rounded-tl-2xl' : i === 4 ? 'rounded-tr-2xl' : ''
             }`}
           >
@@ -81,7 +81,7 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
         const isLastRow = rowIndex === weekRows.length - 1;
 
         return (
-          <div key={rowIndex} className="relative grid grid-cols-5 border-b border-hairline last:border-b-0">
+          <div key={rowIndex} className="relative grid grid-cols-5 border-b border-card-hairline last:border-b-0">
             {row.map((cell, col) => {
               const isLastCol = col === 4;
               // No overflow-hidden on the grid (the popover below needs to escape it near
@@ -95,7 +95,7 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
                     ? 'rounded-br-2xl'
                     : '';
 
-              if (!cell) return <div key={col} className={`h-24 bg-surface-sunken/40 ${cornerClass}`} />;
+              if (!cell) return <div key={col} className={`h-24 bg-white/[0.02] ${cornerClass}`} />;
               const isToday = cell.iso === todayIso;
               const inDrag = Boolean(dragLo && dragHi && cell.iso >= dragLo && cell.iso <= dragHi);
               const dayCount = eventsOnDay(cell.iso, events).length;
@@ -110,15 +110,15 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
               return (
                 <div
                   key={col}
-                  className={`relative h-24 border-r border-hairline p-1.5 last:border-r-0 ${cornerClass} ${
-                    inDrag ? 'bg-primary-soft' : 'bg-surface hover:bg-surface-sunken'
+                  className={`relative h-24 border-r border-card-hairline p-1.5 last:border-r-0 ${cornerClass} ${
+                    inDrag ? 'bg-white/10' : 'hover:bg-white/5'
                   }`}
                   onMouseDown={() => handleMouseDown(cell.iso)}
                   onMouseEnter={() => handleMouseEnter(cell.iso)}
                 >
                   <span
                     className={`inline-flex h-5 w-5 items-center justify-center rounded-full text-[11.5px] font-semibold ${
-                      isToday ? 'bg-primary text-primary-ink' : 'text-ink-secondary'
+                      isToday ? 'bg-white text-[#0c0c0d]' : 'text-white/60'
                     }`}
                   >
                     {cell.day}
@@ -130,23 +130,23 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
                         e.stopPropagation();
                         setPopoverIso(cell.iso);
                       }}
-                      className="absolute bottom-1.5 left-1.5 text-[10px] font-semibold text-ink-muted hover:text-ink"
+                      className="absolute bottom-1.5 left-1.5 text-[10px] font-semibold text-white/40 hover:text-white/80"
                     >
                       +{hiddenCount}개 더보기
                     </button>
                   )}
                   {popoverIso === cell.iso && (
                     <div
-                      className={`absolute z-20 w-52 rounded-xl border border-hairline bg-surface p-2 shadow-2xl ${
+                      className={`absolute z-20 w-52 rounded-xl border border-card-hairline bg-[#1a1a1e] p-2 shadow-2xl ${
                         isLastCol ? 'right-1' : 'left-1'
                       } ${isLastRow ? 'bottom-full mb-1' : 'top-full mt-1'}`}
                     >
                       <div className="mb-1.5 flex items-center justify-between px-1">
-                        <span className="text-[11px] font-bold text-ink">{cell.day}일 일정</span>
+                        <span className="text-[11px] font-bold text-card-text">{cell.day}일 일정</span>
                         <button
                           type="button"
                           onClick={() => setPopoverIso(null)}
-                          className="text-ink-muted hover:text-ink"
+                          className="text-white/40 hover:text-white/80"
                         >
                           <span aria-hidden>✕</span>
                         </button>
@@ -163,7 +163,7 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
                           style={{ color: e.color, backgroundColor: `${e.color}18` }}
                         >
                           {e.title}
-                          <span className="ml-1.5 text-[10px] text-ink-muted">
+                          <span className="ml-1.5 text-[10px] text-white/40">
                             {e.startTime}–{e.endTime}
                           </span>
                         </button>

@@ -15,7 +15,7 @@ export function ReminderStrip({ events, todayIso }: ReminderStripProps) {
     .slice(0, 8);
 
   if (upcoming.length === 0) {
-    return <p className="text-[12px] text-ink-muted">다가오는 일정이 없어요</p>;
+    return <p className="text-[12px] text-white/40">다가오는 일정이 없어요</p>;
   }
 
   return (
@@ -38,8 +38,8 @@ export function ReminderStrip({ events, todayIso }: ReminderStripProps) {
             <p className="text-[10.5px] font-extrabold" style={{ color: e.color }}>
               {dateLabel}
             </p>
-            <p className="truncate text-[12.5px] font-bold text-ink">{e.title}</p>
-            <p className="mt-0.5 text-[10.5px] text-ink-muted">
+            <p className="truncate text-[12.5px] font-bold text-card-text">{e.title}</p>
+            <p className="mt-0.5 text-[10.5px] text-white/40">
               {e.startTime} – {e.endTime}
             </p>
           </div>

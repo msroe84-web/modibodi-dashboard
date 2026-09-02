@@ -193,7 +193,7 @@ export function EventModal({ draft: initialDraft, isEditing, onCancel, onSave, o
             <button
               type="button"
               onClick={handleSave}
-              className="rounded-lg bg-primary px-4 py-2 text-[13px] font-semibold text-primary-ink hover:opacity-90"
+              className="rounded-lg bg-primary px-4 py-2 text-[13px] font-semibold text-page hover:opacity-90"
             >
               저장
             </button>
