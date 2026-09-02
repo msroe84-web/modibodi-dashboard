@@ -51,4 +51,7 @@ export interface PersonalCalendarEvent {
   /** 'HH:MM', 24h. */
   startTime: string;
   endTime: string;
+  /** Last user-resized size (px) of the modal's 내용 box, per event. Unset -> standard default size. */
+  contentWidth?: number;
+  contentHeight?: number;
 }

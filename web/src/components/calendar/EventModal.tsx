@@ -13,6 +13,9 @@ export interface EventModalDraft {
   color: string;
   startTime: string;
   endTime: string;
+  /** Last user-resized size (px) of the 내용 box. Unset -> standard default size. */
+  contentWidth?: number;
+  contentHeight?: number;
 }
 
 interface EventModalProps {
@@ -37,10 +40,30 @@ export function EventModal({ draft: initialDraft, isEditing, onCancel, onSave, o
   // fires a click on the backdrop (the nearest common ancestor of mousedown/mouseup targets)
   // and would incorrectly close the modal, discarding the in-progress edit.
   const backdropMouseDown = useRef(false);
+  const contentBoxRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setDraft(initialDraft);
   }, [initialDraft]);
+
+  // The browser's native CSS `resize` handle sets el.style.width/height directly as the user
+  // drags — read those back (rather than ResizeObserver's contentRect, which excludes padding
+  // and wouldn't round-trip into the same inline width/height we set below) so the box reopens
+  // at the same size next time this event is edited. Untouched (no drag yet) leaves
+  // el.style.width/height empty, so parseFloat is NaN and nothing is written.
+  useEffect(() => {
+    const el = contentBoxRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(() => {
+      const width = parseFloat(el.style.width);
+      const height = parseFloat(el.style.height);
+      if (!Number.isNaN(width) && !Number.isNaN(height)) {
+        setDraft((prev) => ({ ...prev, contentWidth: width, contentHeight: height }));
+      }
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
@@ -184,8 +207,16 @@ export function EventModal({ draft: initialDraft, isEditing, onCancel, onSave, o
         </div>
 
         <div
+          ref={contentBoxRef}
           className="flex w-[320px] shrink-0 resize flex-col overflow-auto border-l border-hairline bg-surface-sunken p-6"
-          style={{ minWidth: 220, minHeight: 280, maxWidth: 600, maxHeight: 640 }}
+          style={{
+            minWidth: 220,
+            minHeight: 280,
+            maxWidth: 600,
+            maxHeight: 640,
+            width: draft.contentWidth,
+            height: draft.contentHeight,
+          }}
         >
           <label className="mb-2 block shrink-0 text-[12px] font-semibold text-ink-secondary">내용</label>
           <textarea
