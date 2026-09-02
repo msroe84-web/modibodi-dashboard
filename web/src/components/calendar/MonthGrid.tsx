@@ -162,10 +162,7 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
                           className="mb-1 block w-full truncate rounded-lg px-2 py-1.5 text-left text-[12px] font-medium last:mb-0"
                           style={{ color: e.color, backgroundColor: `${e.color}18` }}
                         >
-                          {e.title}
-                          <span className="ml-1.5 text-[10px] text-white/40">
-                            {e.startTime}–{e.endTime}
-                          </span>
+                          <span className="text-[10px] text-white/40">{e.startTime}</span> {e.title}
                         </button>
                       ))}
                     </div>
@@ -200,7 +197,7 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
                     } ${bar.roundLeft ? '6px' : '0'}`,
                   }}
                 >
-                  {bar.event.title}
+                  <span className="opacity-70">{bar.event.startTime}</span> {bar.event.title}
                 </button>
               ))}
             </div>
