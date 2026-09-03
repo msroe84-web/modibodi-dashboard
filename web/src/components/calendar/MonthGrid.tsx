@@ -20,10 +20,11 @@ interface MonthGridProps {
 
 const LANE_HEIGHT = 20;
 const BARS_TOP = 32;
-/** Row height in px for a given number of stacked event lanes (0..MAX_VISIBLE_LANES) — the
- * grid isn't one fixed height per row: a week with no events stays compact, one with stacked
- * events grows to fit, closer to how Google Calendar's month view behaves. */
-function rowHeightFor(laneCount: number): number {
+/** Minimum row height in px for a given number of stacked event lanes (0..MAX_VISIBLE_LANES).
+ * Rows are flex children that stretch to fill the card's full height (see the `flex-1` row
+ * below) — this is only a floor so a heavily-booked week never gets compressed below what its
+ * bars need, not the row's actual rendered height. */
+function rowMinHeightFor(laneCount: number): number {
   const contentBottom = laneCount > 0 ? BARS_TOP + laneCount * LANE_HEIGHT : BARS_TOP;
   return Math.max(56, contentBottom + 12);
 }
@@ -79,11 +80,11 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
 
   return (
     <div
-      className="select-none rounded-2xl border border-card-hairline"
+      className="flex h-full select-none flex-col rounded-2xl border border-card-hairline"
       onMouseLeave={abortDrag}
       onMouseUp={handleMouseUp}
     >
-      <div className="grid grid-cols-7 border-b border-card-hairline bg-white/5">
+      <div className="grid shrink-0 grid-cols-7 border-b border-card-hairline bg-white/5">
         {MONTH_DOW_LABELS.map((d, i) => (
           <div
             key={d}
@@ -101,10 +102,14 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
         const visibleBars = placedBars.filter((p) => p.lane < MAX_VISIBLE_LANES);
         const isLastRow = rowIndex === weekRows.length - 1;
         const maxLaneUsed = placedBars.reduce((m, p) => Math.max(m, p.lane + 1), 0);
-        const rowHeight = rowHeightFor(Math.min(MAX_VISIBLE_LANES, maxLaneUsed));
+        const rowMinHeight = rowMinHeightFor(Math.min(MAX_VISIBLE_LANES, maxLaneUsed));
 
         return (
-          <div key={rowIndex} className="relative grid grid-cols-7 border-b border-card-hairline last:border-b-0">
+          <div
+            key={rowIndex}
+            style={{ minHeight: rowMinHeight }}
+            className="relative grid flex-1 grid-cols-7 border-b border-card-hairline last:border-b-0"
+          >
             {row.map((cell, col) => {
               const isLastCol = col === 6;
               // No overflow-hidden on the grid (the popover below needs to escape it near
@@ -133,8 +138,7 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
               return (
                 <div
                   key={col}
-                  style={{ height: rowHeight }}
-                  className={`relative border-r border-card-hairline p-2 last:border-r-0 ${cornerClass} ${
+                  className={`relative h-full border-r border-card-hairline p-2 last:border-r-0 ${cornerClass} ${
                     inDrag ? 'bg-white/10' : 'hover:bg-white/5'
                   } ${cell.inMonth ? '' : 'bg-white/[0.015]'}`}
                   onMouseDown={() => handleMouseDown(cell.iso)}
