@@ -16,17 +16,17 @@ export function WeekGrid({ weekStart, events, todayIso, onSelectDay, onEditEvent
   });
 
   return (
-    <div className="grid h-full grid-cols-5 overflow-hidden rounded-2xl border border-card-hairline">
+    <div className="grid grid-cols-5 overflow-hidden rounded-2xl border border-card-hairline">
       {days.map((d) => {
         const dayEvents = eventsOnDay(d.iso, events);
         const isToday = d.iso === todayIso;
         return (
           <div
             key={d.iso}
-            className="flex h-full min-h-[360px] cursor-pointer flex-col border-r border-card-hairline last:border-r-0 hover:bg-white/[0.03]"
+            className="min-h-[360px] cursor-pointer border-r border-card-hairline last:border-r-0 hover:bg-white/[0.03]"
             onClick={() => onSelectDay(d.iso)}
           >
-            <div className="flex w-full shrink-0 flex-col items-center gap-1 border-b border-card-hairline bg-white/5 py-2">
+            <div className="flex w-full flex-col items-center gap-1 border-b border-card-hairline bg-white/5 py-2">
               <span className="text-[11px] font-semibold text-white/40">{d.label}</span>
               <span
                 className={`flex h-6 w-6 items-center justify-center rounded-full text-[12px] font-bold ${
@@ -36,7 +36,7 @@ export function WeekGrid({ weekStart, events, todayIso, onSelectDay, onEditEvent
                 {d.day}
               </span>
             </div>
-            <div className="flex-1 space-y-1.5 p-1.5">
+            <div className="space-y-1.5 p-1.5">
               {dayEvents.map((e) => (
                 <button
                   key={e.id}

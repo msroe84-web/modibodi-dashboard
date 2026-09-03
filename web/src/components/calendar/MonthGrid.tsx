@@ -80,7 +80,7 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
 
   return (
     <div
-      className="flex h-full select-none flex-col rounded-2xl border border-card-hairline"
+      className="flex h-full select-none flex-col"
       onMouseLeave={abortDrag}
       onMouseUp={handleMouseUp}
     >

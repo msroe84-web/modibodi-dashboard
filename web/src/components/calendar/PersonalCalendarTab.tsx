@@ -63,6 +63,11 @@ export function PersonalCalendarTab() {
     return `${weekStart.getMonth() + 1}월 ${weekStart.getDate()}일 – ${weekEnd.getMonth() + 1}월 ${weekEnd.getDate()}일`;
   }, [view, curYear, curMonth, weekStart]);
 
+  function selectView(next: 'month' | 'week') {
+    setView(next);
+    setShowUpcoming(false);
+  }
+
   function goPrev() {
     if (view === 'month') {
       if (curMonth === 1) {
@@ -128,7 +133,7 @@ export function PersonalCalendarTab() {
             <div className="flex items-center gap-0.5 rounded-lg border border-white/10 bg-white/5 p-0.5">
               <button
                 type="button"
-                onClick={() => setView('month')}
+                onClick={() => selectView('month')}
                 className={`rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
                   view === 'month' ? 'bg-white/15 text-card-text' : 'text-white/50 hover:text-white/80'
                 }`}
@@ -137,26 +142,30 @@ export function PersonalCalendarTab() {
               </button>
               <button
                 type="button"
-                onClick={() => setView('week')}
+                onClick={() => selectView('week')}
                 className={`rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
                   view === 'week' ? 'bg-white/15 text-card-text' : 'text-white/50 hover:text-white/80'
                 }`}
               >
                 주간
               </button>
-              <div className="mx-0.5 h-4 w-px bg-white/10" />
-              <button
-                type="button"
-                onClick={() => setShowUpcoming((v) => !v)}
-                className={`rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
-                  showUpcoming ? 'bg-white/15 text-card-text' : 'text-white/50 hover:text-white/80'
-                }`}
-              >
-                다가오는 일정
-              </button>
+              {view === 'month' && (
+                <>
+                  <div className="mx-0.5 h-4 w-px bg-white/10" />
+                  <button
+                    type="button"
+                    onClick={() => setShowUpcoming((v) => !v)}
+                    className={`rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
+                      showUpcoming ? 'bg-white/15 text-card-text' : 'text-white/50 hover:text-white/80'
+                    }`}
+                  >
+                    다가오는 일정
+                  </button>
+                </>
+              )}
             </div>
 
-            {showUpcoming && (
+            {showUpcoming && view === 'month' && (
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setShowUpcoming(false)} />
                 <div className="absolute right-0 top-full z-20 mt-2 w-72 rounded-xl border border-card-hairline bg-[#1a1a1e] shadow-2xl">
@@ -188,7 +197,7 @@ export function PersonalCalendarTab() {
       </div>
 
       <div className="min-h-0 flex-1">
-        <GradientCard radius={28} padding="p-4" className="card-shadow">
+        <GradientCard radius={28} padding="p-4" variant="glass" className="card-shadow">
           {view === 'month' ? (
             <MonthGrid
               year={curYear}
@@ -199,13 +208,26 @@ export function PersonalCalendarTab() {
               onEditEvent={openEditModal}
             />
           ) : (
-            <WeekGrid
-              weekStart={weekStart}
-              events={events}
-              todayIso={TODAY_ISO}
-              onSelectDay={(iso) => openAddModal(iso, iso)}
-              onEditEvent={openEditModal}
-            />
+            <div className="flex h-full flex-col gap-3">
+              <WeekGrid
+                weekStart={weekStart}
+                events={events}
+                todayIso={TODAY_ISO}
+                onSelectDay={(iso) => openAddModal(iso, iso)}
+                onEditEvent={openEditModal}
+              />
+              <div className="flex min-h-0 flex-1 flex-col rounded-xl border border-card-hairline">
+                <div className="shrink-0 border-b border-card-hairline px-3 py-2 text-[11px] font-bold text-white/50">
+                  다가오는 일정 · 가까운 순
+                </div>
+                <UpcomingPanel
+                  events={events}
+                  todayIso={TODAY_ISO}
+                  onSelectEvent={openEditModal}
+                  className="min-h-0 flex-1 overflow-y-auto p-1.5"
+                />
+              </div>
+            </div>
           )}
         </GradientCard>
       </div>
