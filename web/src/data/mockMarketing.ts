@@ -9,6 +9,7 @@ export interface ChannelDailyMetrics {
   channel: MarketingChannel;
   spend: number;
   revenue: number;
+  impressions: number;
   clicks: number;
   conversions: number;
 }
@@ -34,11 +35,14 @@ function toISODate(d: Date): string {
 const RANGE_DAYS = 120;
 
 /** Per-channel baseline economics — daily spend level, blended ROAS, avg CPC, and click->conversion rate. */
-const CHANNEL_PROFILE: Record<MarketingChannel, { dailySpend: number; roas: number; cpc: number; cvr: number }> = {
-  Meta: { dailySpend: 175_000, roas: 3.3, cpc: 350, cvr: 0.045 },
-  네이버: { dailySpend: 105_000, roas: 2.6, cpc: 420, cvr: 0.052 },
-  구글: { dailySpend: 60_000, roas: 2.9, cpc: 480, cvr: 0.038 },
-  틱톡: { dailySpend: 33_000, roas: 2.0, cpc: 210, cvr: 0.03 },
+const CHANNEL_PROFILE: Record<
+  MarketingChannel,
+  { dailySpend: number; roas: number; cpc: number; cvr: number; ctr: number }
+> = {
+  Meta: { dailySpend: 175_000, roas: 3.3, cpc: 350, cvr: 0.045, ctr: 0.014 },
+  네이버: { dailySpend: 105_000, roas: 2.6, cpc: 420, cvr: 0.052, ctr: 0.009 },
+  구글: { dailySpend: 60_000, roas: 2.9, cpc: 480, cvr: 0.038, ctr: 0.021 },
+  틱톡: { dailySpend: 33_000, roas: 2.0, cpc: 210, cvr: 0.03, ctr: 0.017 },
 };
 
 /** Flat daily rows, one per channel per day — mirrors mockOverview's channelRevenueSeries shape. */
@@ -63,26 +67,30 @@ export const marketingDailySeries: ChannelDailyMetrics[] = (() => {
       const clicksNoise = 0.9 + rand() * 0.2;
       const clicks = Math.max(1, Math.round((spend / profile.cpc) * clicksNoise));
 
+      // Impressions derived from clicks (not the other way around) so CTR = clicks/impressions
+      // stays exactly consistent with the already-established spend->clicks relationship above,
+      // instead of introducing a second independently-noisy number that could drift apart from it.
+      const impressions = Math.max(clicks, Math.round(clicks / profile.ctr));
+
       const cvrNoise = 0.85 + rand() * 0.3;
       const conversions = Math.max(0, Math.round(clicks * profile.cvr * cvrNoise));
 
-      rows.push({ date, channel, spend, revenue, clicks, conversions });
+      rows.push({ date, channel, spend, revenue, impressions, clicks, conversions });
     }
   }
   return rows;
 })();
 
 /** Extract a single channel's daily series for one numeric field, in the {date,value} shape dateRange utils expect. */
-export function channelSeries(
-  channel: MarketingChannel,
-  field: 'spend' | 'revenue' | 'clicks' | 'conversions',
-): TimeSeriesPoint[] {
+export type MarketingDailyField = 'spend' | 'revenue' | 'impressions' | 'clicks' | 'conversions';
+
+export function channelSeries(channel: MarketingChannel, field: MarketingDailyField): TimeSeriesPoint[] {
   return marketingDailySeries
     .filter((r) => r.channel === channel)
     .map((r) => ({ date: r.date, value: r[field] }));
 }
 
-function sumAcrossChannels(field: 'spend' | 'revenue' | 'clicks' | 'conversions'): TimeSeriesPoint[] {
+function sumAcrossChannels(field: MarketingDailyField): TimeSeriesPoint[] {
   const byDate = new Map<string, number>();
   for (const row of marketingDailySeries) {
     byDate.set(row.date, (byDate.get(row.date) ?? 0) + row[field]);

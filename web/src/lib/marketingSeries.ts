@@ -2,7 +2,7 @@ import { marketingDailySeries as mockMarketingDailySeries, type ChannelDailyMetr
 import type { RealMarketingDailyRow } from './dashboardApi';
 import type { TimeSeriesPoint } from './dateRange';
 
-type Field = 'spend' | 'revenue' | 'clicks' | 'conversions';
+type Field = 'spend' | 'revenue' | 'impressions' | 'clicks' | 'conversions';
 
 /** Merges real daily rows (from the Apps Script backend) over the mock series by (channel, date)
  *  key — real values win where present, mock fills every day/channel not yet synced. This keeps
@@ -10,9 +10,18 @@ type Field = 'spend' | 'revenue' | 'clicks' | 'conversions';
  *  have synced, or only Meta is wired up so far) instead of showing holes. */
 export function mergeMarketingDaily(realRows: RealMarketingDailyRow[]): ChannelDailyMetrics[] {
   const realByKey = new Map(realRows.map((r) => [`${r.channel}|${r.date}`, r]));
-  const merged = mockMarketingDailySeries.map((mockRow) => realByKey.get(`${mockRow.channel}|${mockRow.date}`) ?? mockRow);
+  // Field-level merge (real values win per-field where present, mock fills the rest) rather than
+  // swapping in the whole real row — a real row synced before every field is wired up (e.g.
+  // impressions arriving later than spend/clicks) would otherwise silently blank out the fields
+  // it doesn't carry yet instead of falling back to mock for just those.
+  const merged = mockMarketingDailySeries.map((mockRow) => {
+    const real = realByKey.get(`${mockRow.channel}|${mockRow.date}`);
+    return real ? { ...mockRow, ...real } : mockRow;
+  });
   const mockKeys = new Set(mockMarketingDailySeries.map((r) => `${r.channel}|${r.date}`));
-  const extra = realRows.filter((r) => !mockKeys.has(`${r.channel}|${r.date}`));
+  const extra: ChannelDailyMetrics[] = realRows
+    .filter((r) => !mockKeys.has(`${r.channel}|${r.date}`))
+    .map((r) => ({ ...r, impressions: r.impressions ?? 0 }));
   return [...merged, ...extra];
 }
 

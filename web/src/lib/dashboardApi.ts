@@ -11,6 +11,8 @@ export interface RealMarketingDailyRow {
   channel: MarketingChannel;
   spend: number;
   revenue: number;
+  /** Optional: not every ad API integration surfaces impressions from day one. */
+  impressions?: number;
   clicks: number;
   conversions: number;
 }
