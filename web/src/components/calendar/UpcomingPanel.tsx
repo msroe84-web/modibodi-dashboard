@@ -27,7 +27,7 @@ export function UpcomingPanel({
     .slice(0, 12);
 
   if (upcoming.length === 0) {
-    return <p className="p-4 text-center text-[12px] text-white/40">다가오는 일정이 없어요</p>;
+    return <p className="p-4 text-center text-[12px] text-white/40">리마인드가 없어요</p>;
   }
 
   return (

@@ -18,8 +18,9 @@ interface MonthGridProps {
   onEditEvent: (event: PersonalCalendarEvent) => void;
 }
 
-const LANE_HEIGHT = 20;
+const LANE_HEIGHT = 23;
 const BARS_TOP = 32;
+const BAR_HEIGHT = 19;
 /** Minimum row height in px for a given number of stacked event lanes (0..MAX_VISIBLE_LANES).
  * Rows are flex children that stretch to fill the card's full height (see the `flex-1` row
  * below) — this is only a floor so a heavily-booked week never gets compressed below what its
@@ -124,6 +125,7 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
                     : '';
 
               const isToday = cell.iso === todayIso;
+              const isFirstOfMonth = cell.day === 1;
               const holidayName = cell.inMonth ? getHoliday(cell.iso) : undefined;
               const inDrag = Boolean(dragLo && dragHi && cell.iso >= dragLo && cell.iso <= dragHi);
               const dayCount = eventsOnDay(cell.iso, events).length;
@@ -146,11 +148,13 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
                 >
                   <div className="flex items-center gap-1.5">
                     <span
-                      className={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[12.5px] font-semibold ${
+                      className={`inline-flex h-6 shrink-0 items-center justify-center rounded-full text-[12.5px] font-semibold ${
+                        isFirstOfMonth ? 'px-2' : 'w-6'
+                      } ${
                         isToday ? 'bg-white text-[#0c0c0d]' : dayNumberColorClass(col, Boolean(holidayName), cell.inMonth)
                       }`}
                     >
-                      {cell.day}
+                      {isFirstOfMonth ? `${Number(cell.iso.slice(5, 7))}월 1일` : cell.day}
                     </span>
                     {holidayName && (
                       <span className="truncate text-[9.5px] font-bold text-[#F87171]" title={holidayName}>
@@ -212,15 +216,14 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
                   key={bar.event.id}
                   type="button"
                   onClick={() => onEditEvent(bar.event)}
-                  className="pointer-events-auto absolute truncate px-1.5 text-left text-[11px] font-semibold"
+                  className="pointer-events-auto absolute flex items-center px-1.5 text-left text-[11px] font-semibold"
                   style={{
                     left: `calc(${(bar.colStart / 7) * 100}% + ${bar.roundLeft ? 4 : 0}px)`,
                     width: `calc(${((bar.colEnd - bar.colStart + 1) / 7) * 100}% - ${
                       (bar.roundLeft ? 4 : 0) + (bar.roundRight ? 4 : 0)
                     }px)`,
                     top: `${BARS_TOP + bar.lane * LANE_HEIGHT}px`,
-                    height: '18px',
-                    lineHeight: '18px',
+                    height: `${BAR_HEIGHT}px`,
                     color: bar.event.color,
                     backgroundColor: `${bar.event.color}26`,
                     borderTop: `1px solid ${bar.event.color}55`,
@@ -232,7 +235,10 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
                     } ${bar.roundLeft ? '6px' : '0'}`,
                   }}
                 >
-                  {bar.event.startTime && <span className="opacity-70">{bar.event.startTime}</span>} {bar.event.title}
+                  <span className="min-w-0 truncate">
+                    {bar.event.startTime && <span className="opacity-70">{bar.event.startTime} </span>}
+                    {bar.event.title}
+                  </span>
                 </button>
               ))}
             </div>
