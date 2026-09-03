@@ -14,10 +14,21 @@ export interface ProductSalesRow {
   conversionRate: number;
 }
 
+export interface InventoryVariant {
+  /** e.g. "블랙" — looked up in lib/colors.ts for the swatch dot. */
+  color: string;
+  quantity: number;
+}
+
 export interface InventoryRow {
   product: string;
+  /** Always the sum of `variants[].quantity` — never set independently (see mockOverview.ts). */
   stock: number;
   avgDailySales: number;
+  /** Per-color breakdown. Real intake quantities where known, placeholder otherwise — no
+   *  per-variant sales-velocity data exists yet (물류 API 연동 전), so days-left is only ever
+   *  estimated at the product-total level, never per variant. */
+  variants: InventoryVariant[];
 }
 
 export interface CalendarEventRow {

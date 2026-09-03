@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { AlertTriangleIcon, PackageIcon } from 'lucide-react';
 import { GradientCard } from '../ui/GradientCard';
 import { ChartCard } from '../ui/ChartCard';
+import { VariantInventoryTable } from './VariantInventoryTable';
 import { useSettings } from '../../context/SettingsContext';
 import { formatNumber } from '../../lib/format';
 import { inventory } from '../../data/mockOverview';
@@ -86,6 +87,8 @@ export function InventoryTab() {
           </table>
         </div>
       </ChartCard>
+
+      <VariantInventoryTable rows={inventory} />
     </div>
   );
 }
