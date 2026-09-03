@@ -6,8 +6,12 @@ export interface ChannelRevenuePoint {
 
 export interface ProductSalesRow {
   product: string;
+  /** e.g. "CLB-001" — display-only SKU-style code, not tied to any external system yet. */
+  code: string;
   units: number;
   revenue: number;
+  /** Product page conversion rate, 0-100. Cumulative/all-time snapshot — not date-range filtered. */
+  conversionRate: number;
 }
 
 export interface InventoryRow {

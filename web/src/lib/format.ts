@@ -26,3 +26,8 @@ export function formatDate(iso: string): string {
   const d = new Date(iso);
   return `${d.getMonth() + 1}.${d.getDate()}`;
 }
+
+/** ROAS expressed as a multiple, e.g. 3.4 -> "340%". */
+export function formatRoas(roas: number): string {
+  return formatPercent(roas * 100, 0);
+}

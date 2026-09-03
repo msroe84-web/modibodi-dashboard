@@ -53,12 +53,20 @@ export const channelRevenueSeries: ChannelRevenuePoint[] = (() => {
   return rows;
 })();
 
+/** Deterministic, cumulative (not date-range-filtered) product-page conversion rate — a real
+ *  analytics integration will replace this; seeded separately from `rand` so adding/reordering
+ *  other mock series above never shifts these values. */
+const productConversionRate = mulberry32(20260901 + 41);
+
 export const productSales: ProductSalesRow[] = [
-  { product: '클래식 브리프', units: 1240, revenue: 39_680_000 },
-  { product: '심프리 하이웨스트', units: 860, revenue: 30_960_000 },
-  { product: '스윔 보텀', units: 310, revenue: 13_020_000 },
-  { product: '틴 브리프', units: 540, revenue: 15_120_000 },
-];
+  { product: '클래식 브리프', code: 'CLB-001', units: 1240, revenue: 39_680_000 },
+  { product: '심프리 하이웨스트', code: 'SHW-002', units: 860, revenue: 30_960_000 },
+  { product: '스윔 보텀', code: 'SWB-003', units: 310, revenue: 13_020_000 },
+  { product: '틴 브리프', code: 'TNB-004', units: 540, revenue: 15_120_000 },
+].map((row) => ({
+  ...row,
+  conversionRate: Math.round((2 + productConversionRate() * 4) * 10) / 10,
+}));
 
 export const inventory: InventoryRow[] = [
   { product: '클래식 브리프', stock: 210, avgDailySales: 41 },
@@ -104,4 +112,29 @@ export const newCustomersSeries = ordersSeries.map(({ date, value }) => ({
 export const repeatRateSeries = ordersSeries.map(({ date }) => ({
   date,
   value: Math.round((22 + rand() * 10) * 10) / 10,
+}));
+
+/** Purchase-funnel steps (visits -> cart -> checkout -> purchase), built so the ordering is
+ *  *guaranteed* rather than merely likely: `purchase` is the existing `ordersSeries` (unchanged),
+ *  and each step above it is derived from the step below via a fixed conversion-rate constant
+ *  (no independent per-day noise), so multiplying up the funnel can only ever increase the count.
+ *  Only `visitsSeries` carries extra randomness, and it's added strictly on top of `cartSeries`
+ *  (never as an independent draw), so visits >= cart >= checkout >= purchase always holds. */
+const CART_TO_CHECKOUT_RATE = 0.55;
+const CHECKOUT_TO_PURCHASE_RATE = 0.62;
+const VISIT_TO_CART_RATE = 0.12;
+
+export const checkoutSeries = ordersSeries.map(({ date, value }) => ({
+  date,
+  value: Math.round(value / CHECKOUT_TO_PURCHASE_RATE),
+}));
+
+export const cartSeries = checkoutSeries.map(({ date, value }) => ({
+  date,
+  value: Math.round(value / CART_TO_CHECKOUT_RATE),
+}));
+
+export const visitsSeries = cartSeries.map(({ date, value }) => ({
+  date,
+  value: Math.round((value / VISIT_TO_CART_RATE) * (1 + rand() * 0.25)),
 }));

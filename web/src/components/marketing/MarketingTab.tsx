@@ -14,7 +14,7 @@ import {
   type DateRange,
   type RangePreset,
 } from '../../lib/dateRange';
-import { formatKRW, formatPercent } from '../../lib/format';
+import { formatKRW, formatRoas } from '../../lib/format';
 import { TODAY, adSpendMonthToDate } from '../../data/mockOverview';
 import { MARKETING_CHANNELS, marketingDailySeries as mockMarketingDailySeries } from '../../data/mockMarketing';
 import { useDashboardData } from '../../hooks/useDashboardData';
@@ -32,10 +32,6 @@ function trailingWindow<T extends { date: string }>(series: T[], endDate: string
   return series.filter((p) => p.date <= endDate).slice(-n);
 }
 
-/** ROAS expressed as a multiple, e.g. 3.4 -> "340%". */
-function formatRoas(roas: number): string {
-  return formatPercent(roas * 100, 0);
-}
 
 export function MarketingTab() {
   const { settings } = useSettings();
