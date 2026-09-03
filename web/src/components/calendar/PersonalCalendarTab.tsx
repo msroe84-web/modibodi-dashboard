@@ -197,7 +197,7 @@ export function PersonalCalendarTab() {
       </div>
 
       <div className="min-h-0 flex-1">
-        <GradientCard radius={28} padding="p-4" variant="glass" className="card-shadow">
+        <GradientCard radius={28} padding="p-4" className="card-shadow">
           {view === 'month' ? (
             <MonthGrid
               year={curYear}
