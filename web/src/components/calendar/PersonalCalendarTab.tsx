@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { ChevronLeftIcon, ChevronRightIcon, PlusIcon } from 'lucide-react';
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { GradientCard } from '../ui/GradientCard';
 import { EventModal, type EventModalDraft } from './EventModal';
 import { MonthGrid } from './MonthGrid';
@@ -184,15 +184,6 @@ export function PersonalCalendarTab() {
               </>
             )}
           </div>
-
-          <button
-            type="button"
-            onClick={() => openAddModal(TODAY_ISO, TODAY_ISO)}
-            className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-[13px] font-semibold text-page hover:opacity-90"
-          >
-            <PlusIcon size={14} />
-            일정 추가
-          </button>
         </div>
       </div>
 
