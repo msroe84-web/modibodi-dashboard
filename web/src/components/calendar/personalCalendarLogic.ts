@@ -1,36 +1,34 @@
 import type { PersonalCalendarEvent } from '../../lib/types';
 
+/** Mon-Fri labels for the work-week view (WeekGrid). */
 export const WEEKDAY_LABELS = ['월', '화', '수', '목', '금'] as const;
+/** Sun-Sat labels for the month grid, in standard Korean calendar order. */
+export const MONTH_DOW_LABELS = ['일', '월', '화', '수', '목', '금', '토'] as const;
 export const MAX_VISIBLE_LANES = 3;
 
 export interface MonthDayCell {
   day: number;
-  col: number; // 0=Mon .. 4=Fri
+  col: number; // 0=Sun .. 6=Sat
   iso: string;
 }
 
-export type MonthWeekRow = (MonthDayCell | null)[]; // always length 5
+export type MonthWeekRow = (MonthDayCell | null)[]; // always length 7
 
-/** Builds Mon-Fri-only week rows for a given month (weekends are dropped — this is a work-
- * schedule calendar, ported from the legacy index.html calendar which does the same). */
+/** Builds Sun-Sat week rows for a given month, matching a standard Korean calendar. Leading
+ * and trailing cells outside the month are null. */
 export function buildMonthWeekRows(year: number, month: number): MonthWeekRow[] {
   const daysInMonth = new Date(year, month, 0).getDate();
-  const rows: MonthWeekRow[] = [];
-  let currentRow: MonthWeekRow = new Array(5).fill(null);
-  let started = false;
+  const firstWeekday = new Date(year, month - 1, 1).getDay(); // 0=Sun .. 6=Sat
 
+  const cells: (MonthDayCell | null)[] = [];
+  for (let i = 0; i < firstWeekday; i++) cells.push(null);
   for (let day = 1; day <= daysInMonth; day++) {
-    const weekday = new Date(year, month - 1, day).getDay(); // 0=Sun .. 6=Sat
-    if (weekday === 0 || weekday === 6) continue;
-    const col = weekday - 1; // Mon=0 .. Fri=4
-    if (col === 0 && started) {
-      rows.push(currentRow);
-      currentRow = new Array(5).fill(null);
-    }
-    currentRow[col] = { day, col, iso: isoDate(year, month, day) };
-    started = true;
+    cells.push({ day, col: cells.length % 7, iso: isoDate(year, month, day) });
   }
-  if (started) rows.push(currentRow);
+  while (cells.length % 7 !== 0) cells.push(null);
+
+  const rows: MonthWeekRow[] = [];
+  for (let i = 0; i < cells.length; i += 7) rows.push(cells.slice(i, i + 7));
   return rows;
 }
 
