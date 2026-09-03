@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon, PlusIcon } from 'lucide-react';
-import { ChartCard } from '../ui/ChartCard';
+import { GradientCard } from '../ui/GradientCard';
 import { EventModal, type EventModalDraft } from './EventModal';
 import { MonthGrid } from './MonthGrid';
 import { WeekGrid } from './WeekGrid';
-import { ReminderStrip } from './ReminderStrip';
+import { UpcomingPanel } from './UpcomingPanel';
 import { EVENT_COLORS, addDays, dateToISO, startOfWorkWeek } from './personalCalendarLogic';
 import { usePersonalCalendarStore } from '../../hooks/usePersonalCalendarStore';
 import type { PersonalCalendarEvent } from '../../lib/types';
@@ -55,6 +55,7 @@ export function PersonalCalendarTab() {
   const [curMonth, setCurMonth] = useState(TODAY_MONTH);
   const [weekStart, setWeekStart] = useState(() => startOfWorkWeek(TODAY));
   const [modalDraft, setModalDraft] = useState<EventModalDraft | null>(null);
+  const [showUpcoming, setShowUpcoming] = useState(false);
 
   const rangeLabel = useMemo(() => {
     if (view === 'month') return `${curYear}년 ${curMonth}월`;
@@ -107,26 +108,23 @@ export function PersonalCalendarTab() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
+        <div className="flex flex-wrap items-center gap-4">
           <h1 className="text-[20px] font-extrabold text-ink">일정관리</h1>
-          <p className="mt-0.5 text-[13px] text-ink-secondary">회의, 연차, 정산 등 개인·팀 업무 일정을 관리하세요.</p>
+          <div className="flex items-center gap-1">
+            <button type="button" onClick={goPrev} className="rounded-md p-1 text-white/50 hover:bg-white/10 hover:text-white/90">
+              <ChevronLeftIcon size={16} />
+            </button>
+            <span className="min-w-[120px] text-center text-[14px] font-bold text-ink">{rangeLabel}</span>
+            <button type="button" onClick={goNext} className="rounded-md p-1 text-white/50 hover:bg-white/10 hover:text-white/90">
+              <ChevronRightIcon size={16} />
+            </button>
+          </div>
         </div>
-        <button
-          type="button"
-          onClick={() => openAddModal(TODAY_ISO, TODAY_ISO)}
-          className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-[13px] font-semibold text-page hover:opacity-90"
-        >
-          <PlusIcon size={14} />
-          일정 추가
-        </button>
-      </div>
 
-      <ChartCard
-        title={rangeLabel}
-        trailing={
-          <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2">
+          <div className="relative">
             <div className="flex items-center gap-0.5 rounded-lg border border-white/10 bg-white/5 p-0.5">
               <button
                 type="button"
@@ -146,16 +144,50 @@ export function PersonalCalendarTab() {
               >
                 주간
               </button>
+              <div className="mx-0.5 h-4 w-px bg-white/10" />
+              <button
+                type="button"
+                onClick={() => setShowUpcoming((v) => !v)}
+                className={`rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
+                  showUpcoming ? 'bg-white/15 text-card-text' : 'text-white/50 hover:text-white/80'
+                }`}
+              >
+                다가오는 일정
+              </button>
             </div>
-            <button type="button" onClick={goPrev} className="rounded-md p-1 text-white/50 hover:bg-white/10 hover:text-white/90">
-              <ChevronLeftIcon size={16} />
-            </button>
-            <button type="button" onClick={goNext} className="rounded-md p-1 text-white/50 hover:bg-white/10 hover:text-white/90">
-              <ChevronRightIcon size={16} />
-            </button>
+
+            {showUpcoming && (
+              <>
+                <div className="fixed inset-0 z-10" onClick={() => setShowUpcoming(false)} />
+                <div className="absolute right-0 top-full z-20 mt-2 w-72 rounded-xl border border-card-hairline bg-[#1a1a1e] shadow-2xl">
+                  <div className="border-b border-card-hairline px-3 py-2 text-[11px] font-bold text-white/50">
+                    다가오는 일정 · 가까운 순
+                  </div>
+                  <UpcomingPanel
+                    events={events}
+                    todayIso={TODAY_ISO}
+                    onSelectEvent={(e) => {
+                      setShowUpcoming(false);
+                      openEditModal(e);
+                    }}
+                  />
+                </div>
+              </>
+            )}
           </div>
-        }
-      >
+
+          <button
+            type="button"
+            onClick={() => openAddModal(TODAY_ISO, TODAY_ISO)}
+            className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-[13px] font-semibold text-page hover:opacity-90"
+          >
+            <PlusIcon size={14} />
+            일정 추가
+          </button>
+        </div>
+      </div>
+
+      <GradientCard radius={28} padding="p-4" className="card-shadow">
         {view === 'month' ? (
           <MonthGrid
             year={curYear}
@@ -174,11 +206,7 @@ export function PersonalCalendarTab() {
             onEditEvent={openEditModal}
           />
         )}
-      </ChartCard>
-
-      <ChartCard title="⚡ 꼭 챙겨야 할 리마인드">
-        <ReminderStrip events={events} todayIso={TODAY_ISO} />
-      </ChartCard>
+      </GradientCard>
 
       {modalDraft && (
         <EventModal

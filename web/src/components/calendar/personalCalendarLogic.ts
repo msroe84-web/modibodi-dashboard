@@ -10,22 +10,41 @@ export interface MonthDayCell {
   day: number;
   col: number; // 0=Sun .. 6=Sat
   iso: string;
+  /** false for the previous/next month's overflow days shown to fill out the grid. */
+  inMonth: boolean;
 }
 
-export type MonthWeekRow = (MonthDayCell | null)[]; // always length 7
+export type MonthWeekRow = MonthDayCell[]; // always length 7
 
-/** Builds Sun-Sat week rows for a given month, matching a standard Korean calendar. Leading
- * and trailing cells outside the month are null. */
+/** Builds Sun-Sat week rows for a given month, matching a standard Korean/Google-style
+ * calendar: always 6 rows of 7 real dates, with the previous/next month's overflow days
+ * filled in (marked `inMonth: false`) instead of left blank, so the grid reads as one
+ * continuous strip across month boundaries. */
 export function buildMonthWeekRows(year: number, month: number): MonthWeekRow[] {
   const daysInMonth = new Date(year, month, 0).getDate();
   const firstWeekday = new Date(year, month - 1, 1).getDay(); // 0=Sun .. 6=Sat
+  const prevMonthDays = new Date(year, month - 1, 0).getDate();
+  const totalCells = Math.ceil((firstWeekday + daysInMonth) / 7) * 7;
 
-  const cells: (MonthDayCell | null)[] = [];
-  for (let i = 0; i < firstWeekday; i++) cells.push(null);
-  for (let day = 1; day <= daysInMonth; day++) {
-    cells.push({ day, col: cells.length % 7, iso: isoDate(year, month, day) });
+  const prevMonth = month === 1 ? 12 : month - 1;
+  const prevYear = month === 1 ? year - 1 : year;
+  const nextMonth = month === 12 ? 1 : month + 1;
+  const nextYear = month === 12 ? year + 1 : year;
+
+  const cells: MonthDayCell[] = [];
+  for (let i = 0; i < totalCells; i++) {
+    const dayOffset = i - firstWeekday + 1; // 1-based day-of-month, current month
+    const col = i % 7;
+    if (dayOffset < 1) {
+      const day = prevMonthDays + dayOffset;
+      cells.push({ day, col, iso: isoDate(prevYear, prevMonth, day), inMonth: false });
+    } else if (dayOffset > daysInMonth) {
+      const day = dayOffset - daysInMonth;
+      cells.push({ day, col, iso: isoDate(nextYear, nextMonth, day), inMonth: false });
+    } else {
+      cells.push({ day: dayOffset, col, iso: isoDate(year, month, dayOffset), inMonth: true });
+    }
   }
-  while (cells.length % 7 !== 0) cells.push(null);
 
   const rows: MonthWeekRow[] = [];
   for (let i = 0; i < cells.length; i += 7) rows.push(cells.slice(i, i + 7));
@@ -50,12 +69,11 @@ export interface PlacedEventBar {
  * MAX_VISIBLE_LANES; callers filter to `lane < MAX_VISIBLE_LANES` for the bars they render and
  * use `eventsOnDay()` for the "+N more" overflow count. */
 export function placeEventBars(weekRow: MonthWeekRow, events: PersonalCalendarEvent[]): PlacedEventBar[] {
-  const weekDays = weekRow.filter((c): c is MonthDayCell => c !== null);
   const lanes: { colStart: number; colEnd: number }[][] = [];
   const placed: PlacedEventBar[] = [];
 
   for (const event of events) {
-    const overlap = weekDays.filter((wd) => wd.iso >= event.start && wd.iso <= event.end);
+    const overlap = weekRow.filter((wd) => wd.iso >= event.start && wd.iso <= event.end);
     if (overlap.length === 0) continue;
     const colStart = overlap[0].col;
     const colEnd = overlap[overlap.length - 1].col;

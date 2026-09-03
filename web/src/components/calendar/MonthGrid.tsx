@@ -18,9 +18,21 @@ interface MonthGridProps {
   onEditEvent: (event: PersonalCalendarEvent) => void;
 }
 
+const LANE_HEIGHT = 20;
+const BARS_TOP = 32;
+/** Row height in px for a given number of stacked event lanes (0..MAX_VISIBLE_LANES) — the
+ * grid isn't one fixed height per row: a week with no events stays compact, one with stacked
+ * events grows to fit, closer to how Google Calendar's month view behaves. */
+function rowHeightFor(laneCount: number): number {
+  const contentBottom = laneCount > 0 ? BARS_TOP + laneCount * LANE_HEIGHT : BARS_TOP;
+  return Math.max(56, contentBottom + 12);
+}
+
 /** Text color for a day number: red for Sunday/holidays, blue for Saturday, default otherwise.
- * `isToday` cells keep the white-circle/black-text treatment instead (handled by the caller). */
-function dayNumberColorClass(dow: number, isHoliday: boolean): string {
+ * `isToday` cells keep the white-circle/black-text treatment instead (handled by the caller).
+ * Days outside the current month are always muted, regardless of weekday/holiday. */
+function dayNumberColorClass(dow: number, isHoliday: boolean, inMonth: boolean): string {
+  if (!inMonth) return 'text-white/25';
   if (isHoliday || dow === 0) return 'text-[#F87171]';
   if (dow === 6) return 'text-[#60A5FA]';
   return 'text-white/60';
@@ -88,6 +100,8 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
         const placedBars = placeEventBars(row, events);
         const visibleBars = placedBars.filter((p) => p.lane < MAX_VISIBLE_LANES);
         const isLastRow = rowIndex === weekRows.length - 1;
+        const maxLaneUsed = placedBars.reduce((m, p) => Math.max(m, p.lane + 1), 0);
+        const rowHeight = rowHeightFor(Math.min(MAX_VISIBLE_LANES, maxLaneUsed));
 
         return (
           <div key={rowIndex} className="relative grid grid-cols-7 border-b border-card-hairline last:border-b-0">
@@ -104,9 +118,8 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
                     ? 'rounded-br-2xl'
                     : '';
 
-              if (!cell) return <div key={col} className={`h-28 bg-white/[0.02] ${cornerClass}`} />;
               const isToday = cell.iso === todayIso;
-              const holidayName = getHoliday(cell.iso);
+              const holidayName = cell.inMonth ? getHoliday(cell.iso) : undefined;
               const inDrag = Boolean(dragLo && dragHi && cell.iso >= dragLo && cell.iso <= dragHi);
               const dayCount = eventsOnDay(cell.iso, events).length;
               // Count visible bars actually covering this column, not a flat
@@ -120,16 +133,17 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
               return (
                 <div
                   key={col}
-                  className={`relative h-28 border-r border-card-hairline p-2 last:border-r-0 ${cornerClass} ${
+                  style={{ height: rowHeight }}
+                  className={`relative border-r border-card-hairline p-2 last:border-r-0 ${cornerClass} ${
                     inDrag ? 'bg-white/10' : 'hover:bg-white/5'
-                  }`}
+                  } ${cell.inMonth ? '' : 'bg-white/[0.015]'}`}
                   onMouseDown={() => handleMouseDown(cell.iso)}
                   onMouseEnter={() => handleMouseEnter(cell.iso)}
                 >
                   <div className="flex items-center gap-1.5">
                     <span
                       className={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[12.5px] font-semibold ${
-                        isToday ? 'bg-white text-[#0c0c0d]' : dayNumberColorClass(col, Boolean(holidayName))
+                        isToday ? 'bg-white text-[#0c0c0d]' : dayNumberColorClass(col, Boolean(holidayName), cell.inMonth)
                       }`}
                     >
                       {cell.day}
@@ -200,7 +214,7 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
                     width: `calc(${((bar.colEnd - bar.colStart + 1) / 7) * 100}% - ${
                       (bar.roundLeft ? 4 : 0) + (bar.roundRight ? 4 : 0)
                     }px)`,
-                    top: `${32 + bar.lane * 20}px`,
+                    top: `${BARS_TOP + bar.lane * LANE_HEIGHT}px`,
                     height: '18px',
                     lineHeight: '18px',
                     color: bar.event.color,
