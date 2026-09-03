@@ -71,7 +71,11 @@ export const marketingDailySeries: ChannelDailyMetrics[] = (() => {
       // Impressions derived from clicks (not the other way around) so CTR = clicks/impressions
       // stays exactly consistent with the already-established spend->clicks relationship above,
       // instead of introducing a second independently-noisy number that could drift apart from it.
-      const impressions = Math.max(clicks, Math.round(clicks / profile.ctr));
+      // The ctr ratio itself gets its own daily noise here (like cvrNoise below) — without it,
+      // impressions would be an exact constant multiple of clicks every day, making CTR a flat
+      // line with zero day-to-day movement, which defeats the point of charting it as a trend.
+      const ctrNoise = 0.8 + rand() * 0.4;
+      const impressions = Math.max(clicks, Math.round(clicks / (profile.ctr * ctrNoise)));
 
       const cvrNoise = 0.85 + rand() * 0.3;
       const conversions = Math.max(0, Math.round(clicks * profile.cvr * cvrNoise));
