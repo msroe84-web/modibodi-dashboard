@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { BudgetUsageCard } from './BudgetUsageCard';
+import { CampaignPerformanceTable } from './CampaignPerformanceTable';
 import { ChannelRoasCard } from './ChannelRoasCard';
 import { ChannelSpendShareCard } from './ChannelSpendShareCard';
 import { DateRangePicker } from '../overview/DateRangePicker';
@@ -16,7 +17,7 @@ import {
 } from '../../lib/dateRange';
 import { formatKRW, formatRoas } from '../../lib/format';
 import { TODAY, adSpendMonthToDate } from '../../data/mockOverview';
-import { MARKETING_CHANNELS, marketingDailySeries as mockMarketingDailySeries } from '../../data/mockMarketing';
+import { MARKETING_CHANNELS, campaigns, marketingDailySeries as mockMarketingDailySeries } from '../../data/mockMarketing';
 import { useDashboardData } from '../../hooks/useDashboardData';
 import {
   channelSeriesFrom,
@@ -151,6 +152,8 @@ export function MarketingTab() {
           ))}
         </div>
       </div>
+
+      <CampaignPerformanceTable rows={campaigns} />
     </div>
   );
 }

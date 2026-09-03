@@ -43,6 +43,21 @@ export interface AdCreativeRow {
   startDate: string;
 }
 
+/** Cumulative (not date-range filtered) campaign performance. Only impressions/ctr/cpc/
+ *  conversions/revenue are stored — clicks/spend/cpa/roas are always derived from these so
+ *  they can never drift out of sync with each other. */
+export interface CampaignRow {
+  id: string;
+  channel: string;
+  name: string;
+  impressions: number;
+  /** 0-100 */
+  ctr: number;
+  cpc: number;
+  conversions: number;
+  revenue: number;
+}
+
 export interface PersonalCalendarEvent {
   id: string;
   title: string;
