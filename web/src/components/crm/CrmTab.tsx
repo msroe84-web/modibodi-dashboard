@@ -1,8 +1,12 @@
 import { useMemo, useState } from 'react';
-import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
+import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
 import { DateRangePicker } from '../overview/DateRangePicker';
 import { StatTile } from '../overview/StatTile';
 import { ChartCard } from '../ui/ChartCard';
+import { CohortRetentionHeatmap } from './CohortRetentionHeatmap';
+import { GradeChangeList } from './GradeChangeList';
+import { GradeDistributionCard } from './GradeDistributionCard';
+import { LifecycleFunnelCard } from './LifecycleFunnelCard';
 import {
   aggregate,
   filterSeries,
@@ -14,8 +18,18 @@ import {
   type TimeSeriesPoint,
 } from '../../lib/dateRange';
 import { formatDate, formatNumber, formatPercent } from '../../lib/format';
-import { TODAY, newCustomersSeries } from '../../data/mockOverview';
-import { repeatCustomersSeries, totalActiveCustomers } from '../../data/mockCrm';
+import { TODAY, newCustomersSeries, totalRevenueSeries } from '../../data/mockOverview';
+import {
+  DORMANT_DAYS_THRESHOLD,
+  avgRepeatCycleDays,
+  cohortRetention,
+  dormantCustomers,
+  gradeChanges,
+  gradeDistribution,
+  lifecycleStages,
+  repeatCustomersSeries,
+  totalActiveCustomers,
+} from '../../data/mockCrm';
 
 const RANGE_LABELS: Record<RangePreset, string> = {
   today: '오늘',
@@ -24,21 +38,21 @@ const RANGE_LABELS: Record<RangePreset, string> = {
   custom: '직접 지정 기간',
 };
 
-/** Weekly bucketing threshold — beyond this many days, daily bars get too dense to read. */
+/** Weekly bucketing threshold — beyond this many days, daily lines get too dense to read. */
 const WEEKLY_BUCKET_THRESHOLD_DAYS = 45;
 
 function trailingWindow<T extends { date: string }>(series: T[], endDate: string, n: number): T[] {
   return series.filter((p) => p.date <= endDate).slice(-n);
 }
 
-interface CrmBarPoint {
+interface CrmLinePoint {
   date: string;
   신규: number;
   재구매: number;
 }
 
-function bucketWeekly(points: CrmBarPoint[]): CrmBarPoint[] {
-  const buckets: CrmBarPoint[] = [];
+function bucketWeekly(points: CrmLinePoint[]): CrmLinePoint[] {
+  const buckets: CrmLinePoint[] = [];
   for (let i = 0; i < points.length; i += 7) {
     const chunk = points.slice(i, i + 7);
     buckets.push({
@@ -70,6 +84,12 @@ export function CrmTab() {
   const prevRepeatRate =
     prevNewCustomers + prevRepeatCustomers > 0 ? (prevRepeatCustomers / (prevNewCustomers + prevRepeatCustomers)) * 100 : 0;
 
+  // ARPU = 선택 구간 매출 / 그 구간 신규+재구매 고객수 (date-range 연동).
+  const revenueInRange = aggregate(filterSeries(totalRevenueSeries, range), 'sum');
+  const prevRevenue = aggregate(filterSeries(totalRevenueSeries, prevRange), 'sum');
+  const arpu = newCustomers + repeatCustomers > 0 ? revenueInRange / (newCustomers + repeatCustomers) : 0;
+  const prevArpu = prevNewCustomers + prevRepeatCustomers > 0 ? prevRevenue / (prevNewCustomers + prevRepeatCustomers) : 0;
+
   /** Daily repeat-purchase rate, derived from the two count series (for the 재구매율 sparkline). */
   const dailyRepeatRateSeries: TimeSeriesPoint[] = useMemo(
     () =>
@@ -81,8 +101,8 @@ export function CrmTab() {
     [],
   );
 
-  const chartData = useMemo<CrmBarPoint[]>(() => {
-    const points: CrmBarPoint[] = newInRange.map((p, i) => ({
+  const chartData = useMemo<CrmLinePoint[]>(() => {
+    const points: CrmLinePoint[] = newInRange.map((p, i) => ({
       date: p.date,
       신규: p.value,
       재구매: repeatInRange[i]?.value ?? 0,
@@ -92,6 +112,11 @@ export function CrmTab() {
 
   const isWeeklyBucketed = chartData.length !== newInRange.length;
   const tickEvery = Math.max(1, Math.ceil(chartData.length / 8));
+
+  const cohortMonthLabels = useMemo(
+    () => Array.from({ length: cohortRetention[0]?.retentionPct.length ?? 0 }, (_, i) => `M${i}`),
+    [],
+  );
 
   return (
     <div className="space-y-4">
@@ -105,7 +130,7 @@ export function CrmTab() {
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
         <StatTile
           label="신규 고객수"
           value={newCustomers}
@@ -127,6 +152,32 @@ export function CrmTab() {
           changePct={percentChange(repeatRate, prevRepeatRate)}
           sparkline={trailingWindow(dailyRepeatRateSeries, range.end, 14).map((p) => p.value)}
         />
+        <StatTile
+          label={`휴면 고객 (${DORMANT_DAYS_THRESHOLD}일+)`}
+          value={dormantCustomers}
+          format={formatNumber}
+          changePct={0}
+          sparkline={[]}
+        />
+        <StatTile
+          label="ARPU"
+          value={arpu}
+          format={(n) => `₩${formatNumber(n)}`}
+          changePct={percentChange(arpu, prevArpu)}
+          sparkline={[]}
+        />
+        <StatTile
+          label="평균 재구매 주기"
+          value={avgRepeatCycleDays}
+          format={(n) => `${formatNumber(n)}일`}
+          changePct={0}
+          sparkline={[]}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <LifecycleFunnelCard stages={lifecycleStages} />
+        <GradeDistributionCard rows={gradeDistribution} />
       </div>
 
       <ChartCard
@@ -147,7 +198,7 @@ export function CrmTab() {
       >
         <div className="h-[240px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 8, right: 4, bottom: 0, left: 4 }}>
+            <LineChart data={chartData} margin={{ top: 8, right: 4, bottom: 0, left: 4 }}>
               <XAxis
                 dataKey="date"
                 tickFormatter={formatDate}
@@ -168,13 +219,33 @@ export function CrmTab() {
                   color: 'var(--card-text)',
                 }}
               />
-              <Bar dataKey="신규" stackId="customers" fill="var(--card-series-1)" radius={[0, 0, 0, 0]} isAnimationActive={false} />
-              <Bar dataKey="재구매" stackId="customers" fill="var(--card-silver)" radius={[4, 4, 0, 0]} isAnimationActive={false} />
-            </BarChart>
+              <Line
+                type="monotone"
+                dataKey="신규"
+                stroke="var(--card-series-1)"
+                strokeWidth={2.5}
+                dot={false}
+                activeDot={{ r: 4, strokeWidth: 2, stroke: 'var(--card-bg-1)' }}
+                isAnimationActive={false}
+              />
+              <Line
+                type="monotone"
+                dataKey="재구매"
+                stroke="var(--card-silver)"
+                strokeWidth={2.5}
+                dot={false}
+                activeDot={{ r: 4, strokeWidth: 2, stroke: 'var(--card-bg-1)' }}
+                isAnimationActive={false}
+              />
+            </LineChart>
           </ResponsiveContainer>
         </div>
         <p className="mt-1 text-right text-[11.5px] text-white/40">활성 고객(누적) 약 {formatNumber(totalActiveCustomers)}명</p>
       </ChartCard>
+
+      <CohortRetentionHeatmap rows={cohortRetention} monthLabels={cohortMonthLabels} />
+
+      <GradeChangeList rows={gradeChanges} />
     </div>
   );
 }
