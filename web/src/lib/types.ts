@@ -45,12 +45,17 @@ export interface AdCreativeRow {
   id: string;
   name: string;
   format: CreativeFormat;
+  /** Single-channel for now — no other channel exposes creative-level data yet, so this isn't
+   *  a real dimension to analyze by (see 분류 분석's format/campaign-only breakdowns). */
   channel: 'Meta';
   status: CreativeStatus;
+  /** Links to a CampaignRow.id in mockMarketing.ts's `campaigns` (Meta rows only). */
+  campaignId: string;
   spend: number;
   impressions: number;
   clicks: number;
   conversions: number;
+  revenue: number;
   startDate: string;
 }
 
