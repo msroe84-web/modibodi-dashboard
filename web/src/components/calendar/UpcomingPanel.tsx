@@ -4,12 +4,20 @@ interface UpcomingPanelProps {
   events: PersonalCalendarEvent[];
   todayIso: string;
   onSelectEvent: (event: PersonalCalendarEvent) => void;
+  /** Wrapper classes — override to fit wherever this is mounted (a floating dropdown vs. an
+   * inline panel that should just fill its flex parent). Defaults to the dropdown sizing. */
+  className?: string;
 }
 
-/** Dropdown content for the "다가오는 일정" toggle: the same "soonest first" list the old
- * always-visible reminder strip showed, just as a compact vertical list instead of a
- * horizontal-scroll card that ate a full row of page height. */
-export function UpcomingPanel({ events, todayIso, onSelectEvent }: UpcomingPanelProps) {
+/** The "soonest first" upcoming-events list, shared by the "다가오는 일정" dropdown (month
+ * view, where there's no spare space) and the inline panel under the week view's grid (which
+ * has room to show it permanently instead). */
+export function UpcomingPanel({
+  events,
+  todayIso,
+  onSelectEvent,
+  className = 'max-h-[360px] overflow-y-auto p-1.5',
+}: UpcomingPanelProps) {
   // Filtering by e.end (not e.start) so a multi-day event that's already under way today
   // still shows up — "다가오는 일정" should include things you still need to show up for,
   // not just ones that haven't started yet.
@@ -23,7 +31,7 @@ export function UpcomingPanel({ events, todayIso, onSelectEvent }: UpcomingPanel
   }
 
   return (
-    <div className="max-h-[360px] overflow-y-auto p-1.5">
+    <div className={className}>
       {upcoming.map((e) => {
         const dateLabel =
           e.start === e.end ? formatMonthDay(e.start) : `${formatMonthDay(e.start)} ~ ${formatMonthDay(e.end)}`;
