@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import {
   MAX_VISIBLE_LANES,
-  WEEKDAY_LABELS,
+  MONTH_DOW_LABELS,
   buildMonthWeekRows,
   eventsOnDay,
   placeEventBars,
 } from './personalCalendarLogic';
+import { getHoliday } from '../../data/koreanHolidays';
 import type { PersonalCalendarEvent } from '../../lib/types';
 
 interface MonthGridProps {
@@ -15,6 +16,14 @@ interface MonthGridProps {
   todayIso: string;
   onSelectRange: (startIso: string, endIso: string) => void;
   onEditEvent: (event: PersonalCalendarEvent) => void;
+}
+
+/** Text color for a day number: red for Sunday/holidays, blue for Saturday, default otherwise.
+ * `isToday` cells keep the white-circle/black-text treatment instead (handled by the caller). */
+function dayNumberColorClass(dow: number, isHoliday: boolean): string {
+  if (isHoliday || dow === 0) return 'text-[#F87171]';
+  if (dow === 6) return 'text-[#60A5FA]';
+  return 'text-white/60';
 }
 
 export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEditEvent }: MonthGridProps) {
@@ -62,12 +71,12 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
       onMouseLeave={abortDrag}
       onMouseUp={handleMouseUp}
     >
-      <div className="grid grid-cols-5 border-b border-card-hairline bg-white/5">
-        {WEEKDAY_LABELS.map((d, i) => (
+      <div className="grid grid-cols-7 border-b border-card-hairline bg-white/5">
+        {MONTH_DOW_LABELS.map((d, i) => (
           <div
             key={d}
-            className={`py-2 text-center text-[11px] font-semibold text-white/40 ${
-              i === 0 ? 'rounded-tl-2xl' : i === 4 ? 'rounded-tr-2xl' : ''
+            className={`py-2.5 text-center text-[12px] font-semibold ${
+              i === 0 ? 'rounded-tl-2xl text-[#F87171]' : i === 6 ? 'rounded-tr-2xl text-[#60A5FA]' : 'text-white/40'
             }`}
           >
             {d}
@@ -81,9 +90,9 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
         const isLastRow = rowIndex === weekRows.length - 1;
 
         return (
-          <div key={rowIndex} className="relative grid grid-cols-5 border-b border-card-hairline last:border-b-0">
+          <div key={rowIndex} className="relative grid grid-cols-7 border-b border-card-hairline last:border-b-0">
             {row.map((cell, col) => {
-              const isLastCol = col === 4;
+              const isLastCol = col === 6;
               // No overflow-hidden on the grid (the popover below needs to escape it near
               // edges), so the corner cells round themselves to match the outer border
               // instead of relying on ancestor clipping.
@@ -95,8 +104,9 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
                     ? 'rounded-br-2xl'
                     : '';
 
-              if (!cell) return <div key={col} className={`h-24 bg-white/[0.02] ${cornerClass}`} />;
+              if (!cell) return <div key={col} className={`h-28 bg-white/[0.02] ${cornerClass}`} />;
               const isToday = cell.iso === todayIso;
+              const holidayName = getHoliday(cell.iso);
               const inDrag = Boolean(dragLo && dragHi && cell.iso >= dragLo && cell.iso <= dragHi);
               const dayCount = eventsOnDay(cell.iso, events).length;
               // Count visible bars actually covering this column, not a flat
@@ -110,19 +120,26 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
               return (
                 <div
                   key={col}
-                  className={`relative h-24 border-r border-card-hairline p-1.5 last:border-r-0 ${cornerClass} ${
+                  className={`relative h-28 border-r border-card-hairline p-2 last:border-r-0 ${cornerClass} ${
                     inDrag ? 'bg-white/10' : 'hover:bg-white/5'
                   }`}
                   onMouseDown={() => handleMouseDown(cell.iso)}
                   onMouseEnter={() => handleMouseEnter(cell.iso)}
                 >
-                  <span
-                    className={`inline-flex h-5 w-5 items-center justify-center rounded-full text-[11.5px] font-semibold ${
-                      isToday ? 'bg-white text-[#0c0c0d]' : 'text-white/60'
-                    }`}
-                  >
-                    {cell.day}
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <span
+                      className={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[12.5px] font-semibold ${
+                        isToday ? 'bg-white text-[#0c0c0d]' : dayNumberColorClass(col, Boolean(holidayName))
+                      }`}
+                    >
+                      {cell.day}
+                    </span>
+                    {holidayName && (
+                      <span className="truncate text-[9.5px] font-bold text-[#F87171]" title={holidayName}>
+                        {holidayName}
+                      </span>
+                    )}
+                  </div>
                   {hiddenCount > 0 && (
                     <button
                       type="button"
@@ -130,7 +147,7 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
                         e.stopPropagation();
                         setPopoverIso(cell.iso);
                       }}
-                      className="absolute bottom-1.5 left-1.5 text-[10px] font-semibold text-white/40 hover:text-white/80"
+                      className="absolute bottom-2 left-2 text-[10px] font-semibold text-white/40 hover:text-white/80"
                     >
                       +{hiddenCount}개 더보기
                     </button>
@@ -179,11 +196,11 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
                   onClick={() => onEditEvent(bar.event)}
                   className="pointer-events-auto absolute truncate px-1.5 text-left text-[11px] font-semibold"
                   style={{
-                    left: `calc(${(bar.colStart / 5) * 100}% + ${bar.roundLeft ? 4 : 0}px)`,
-                    width: `calc(${((bar.colEnd - bar.colStart + 1) / 5) * 100}% - ${
+                    left: `calc(${(bar.colStart / 7) * 100}% + ${bar.roundLeft ? 4 : 0}px)`,
+                    width: `calc(${((bar.colEnd - bar.colStart + 1) / 7) * 100}% - ${
                       (bar.roundLeft ? 4 : 0) + (bar.roundRight ? 4 : 0)
                     }px)`,
-                    top: `${28 + bar.lane * 20}px`,
+                    top: `${32 + bar.lane * 20}px`,
                     height: '18px',
                     lineHeight: '18px',
                     color: bar.event.color,
