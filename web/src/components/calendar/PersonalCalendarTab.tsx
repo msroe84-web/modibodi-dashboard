@@ -159,7 +159,7 @@ export function PersonalCalendarTab() {
                       showUpcoming ? 'bg-white/15 text-card-text' : 'text-white/50 hover:text-white/80'
                     }`}
                   >
-                    다가오는 일정
+                    리마인드
                   </button>
                 </>
               )}
@@ -170,7 +170,7 @@ export function PersonalCalendarTab() {
                 <div className="fixed inset-0 z-10" onClick={() => setShowUpcoming(false)} />
                 <div className="absolute right-0 top-full z-20 mt-2 w-72 rounded-xl border border-card-hairline bg-[#1a1a1e] shadow-2xl">
                   <div className="border-b border-card-hairline px-3 py-2 text-[11px] font-bold text-white/50">
-                    다가오는 일정 · 가까운 순
+                    리마인드 · 가까운 순
                   </div>
                   <UpcomingPanel
                     events={events}
@@ -209,7 +209,7 @@ export function PersonalCalendarTab() {
               />
               <div className="flex min-h-0 flex-1 flex-col rounded-xl border border-card-hairline">
                 <div className="shrink-0 border-b border-card-hairline px-3 py-2 text-[11px] font-bold text-white/50">
-                  다가오는 일정 · 가까운 순
+                  리마인드 · 가까운 순
                 </div>
                 <UpcomingPanel
                   events={events}
