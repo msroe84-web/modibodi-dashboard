@@ -21,12 +21,12 @@ export function WeekGrid({ weekStart, events, todayIso, onSelectDay, onEditEvent
         const dayEvents = eventsOnDay(d.iso, events);
         const isToday = d.iso === todayIso;
         return (
-          <div key={d.iso} className="min-h-[360px] border-r border-card-hairline last:border-r-0">
-            <button
-              type="button"
-              onClick={() => onSelectDay(d.iso)}
-              className="flex w-full flex-col items-center gap-1 border-b border-card-hairline bg-white/5 py-2 hover:bg-white/10"
-            >
+          <div
+            key={d.iso}
+            className="min-h-[360px] cursor-pointer border-r border-card-hairline last:border-r-0 hover:bg-white/[0.03]"
+            onClick={() => onSelectDay(d.iso)}
+          >
+            <div className="flex w-full flex-col items-center gap-1 border-b border-card-hairline bg-white/5 py-2">
               <span className="text-[11px] font-semibold text-white/40">{d.label}</span>
               <span
                 className={`flex h-6 w-6 items-center justify-center rounded-full text-[12px] font-bold ${
@@ -35,13 +35,16 @@ export function WeekGrid({ weekStart, events, todayIso, onSelectDay, onEditEvent
               >
                 {d.day}
               </span>
-            </button>
+            </div>
             <div className="space-y-1.5 p-1.5">
               {dayEvents.map((e) => (
                 <button
                   key={e.id}
                   type="button"
-                  onClick={() => onEditEvent(e)}
+                  onClick={(evt) => {
+                    evt.stopPropagation();
+                    onEditEvent(e);
+                  }}
                   className="block w-full truncate rounded-lg px-2 py-1.5 text-left text-[11.5px] font-semibold"
                   style={{ color: e.color, backgroundColor: `${e.color}22`, border: `1px solid ${e.color}66` }}
                 >
