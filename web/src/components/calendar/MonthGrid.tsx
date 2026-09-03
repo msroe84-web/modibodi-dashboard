@@ -84,12 +84,12 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
       onMouseLeave={abortDrag}
       onMouseUp={handleMouseUp}
     >
-      <div className="grid shrink-0 grid-cols-7 border-b border-card-hairline bg-white/5">
+      <div className="grid shrink-0 grid-cols-7 overflow-hidden rounded-t-2xl border-b border-card-hairline bg-white/5">
         {MONTH_DOW_LABELS.map((d, i) => (
           <div
             key={d}
             className={`py-2.5 text-center text-[12px] font-semibold ${
-              i === 0 ? 'rounded-tl-2xl text-[#F87171]' : i === 6 ? 'rounded-tr-2xl text-[#60A5FA]' : 'text-white/40'
+              i === 0 ? 'text-[#F87171]' : i === 6 ? 'text-[#60A5FA]' : 'text-white/40'
             }`}
           >
             {d}
