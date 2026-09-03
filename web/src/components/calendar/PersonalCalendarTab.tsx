@@ -108,8 +108,8 @@ export function PersonalCalendarTab() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="flex h-full flex-col gap-4">
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-4">
           <h1 className="text-[20px] font-extrabold text-ink">일정관리</h1>
           <div className="flex items-center gap-1">
@@ -187,26 +187,28 @@ export function PersonalCalendarTab() {
         </div>
       </div>
 
-      <GradientCard radius={28} padding="p-4" className="card-shadow">
-        {view === 'month' ? (
-          <MonthGrid
-            year={curYear}
-            month={curMonth}
-            events={events}
-            todayIso={TODAY_ISO}
-            onSelectRange={openAddModal}
-            onEditEvent={openEditModal}
-          />
-        ) : (
-          <WeekGrid
-            weekStart={weekStart}
-            events={events}
-            todayIso={TODAY_ISO}
-            onSelectDay={(iso) => openAddModal(iso, iso)}
-            onEditEvent={openEditModal}
-          />
-        )}
-      </GradientCard>
+      <div className="min-h-0 flex-1">
+        <GradientCard radius={28} padding="p-4" className="card-shadow">
+          {view === 'month' ? (
+            <MonthGrid
+              year={curYear}
+              month={curMonth}
+              events={events}
+              todayIso={TODAY_ISO}
+              onSelectRange={openAddModal}
+              onEditEvent={openEditModal}
+            />
+          ) : (
+            <WeekGrid
+              weekStart={weekStart}
+              events={events}
+              todayIso={TODAY_ISO}
+              onSelectDay={(iso) => openAddModal(iso, iso)}
+              onEditEvent={openEditModal}
+            />
+          )}
+        </GradientCard>
+      </div>
 
       {modalDraft && (
         <EventModal
