@@ -1,5 +1,6 @@
 import { TODAY } from './mockOverview';
 import type { TimeSeriesPoint } from '../lib/dateRange';
+import type { CampaignRow } from '../lib/types';
 
 export const MARKETING_CHANNELS = ['Meta', '네이버', '구글', '틱톡'] as const;
 export type MarketingChannel = (typeof MARKETING_CHANNELS)[number];
@@ -80,6 +81,93 @@ export const marketingDailySeries: ChannelDailyMetrics[] = (() => {
   }
   return rows;
 })();
+
+/** Cumulative (all-time, not date-range filtered) campaign rows — 2 per channel. Only
+ *  impressions/ctr/cpc/conversions/revenue are hand-set; clicks/spend/cpa/roas are always
+ *  derived from these wherever they're displayed (see marketingSeries.ts helpers), never stored
+ *  separately, so a table can't show numbers that don't multiply out consistently. */
+export const campaigns: CampaignRow[] = [
+  {
+    id: 'meta-brand',
+    channel: 'Meta',
+    name: '브랜드 인지도 캠페인',
+    impressions: 1_240_000,
+    ctr: 1.3,
+    cpc: 340,
+    conversions: 610,
+    revenue: 18_400_000,
+  },
+  {
+    id: 'meta-retarget',
+    channel: 'Meta',
+    name: '리타겟팅 캠페인',
+    impressions: 480_000,
+    ctr: 2.1,
+    cpc: 310,
+    conversions: 540,
+    revenue: 21_200_000,
+  },
+  {
+    id: 'naver-powerlink',
+    channel: '네이버',
+    name: '파워링크 키워드',
+    impressions: 610_000,
+    ctr: 1.6,
+    cpc: 430,
+    conversions: 430,
+    revenue: 12_600_000,
+  },
+  {
+    id: 'naver-shopping',
+    channel: '네이버',
+    name: '쇼핑 검색광고',
+    impressions: 390_000,
+    ctr: 1.1,
+    cpc: 400,
+    conversions: 260,
+    revenue: 7_900_000,
+  },
+  {
+    id: 'google-pmax',
+    channel: '구글',
+    name: '퍼포먼스 맥스',
+    impressions: 720_000,
+    ctr: 1.8,
+    cpc: 470,
+    conversions: 380,
+    revenue: 11_500_000,
+  },
+  {
+    id: 'google-youtube',
+    channel: '구글',
+    name: '유튜브 인스트림',
+    impressions: 950_000,
+    ctr: 0.9,
+    cpc: 260,
+    conversions: 150,
+    revenue: 3_700_000,
+  },
+  {
+    id: 'tiktok-spark',
+    channel: '틱톡',
+    name: '스파크 애즈',
+    impressions: 540_000,
+    ctr: 1.7,
+    cpc: 200,
+    conversions: 190,
+    revenue: 3_900_000,
+  },
+  {
+    id: 'tiktok-topview',
+    channel: '틱톡',
+    name: '탑뷰 캠페인',
+    impressions: 310_000,
+    ctr: 1.5,
+    cpc: 230,
+    conversions: 95,
+    revenue: 1_600_000,
+  },
+];
 
 /** Extract a single channel's daily series for one numeric field, in the {date,value} shape dateRange utils expect. */
 export type MarketingDailyField = 'spend' | 'revenue' | 'impressions' | 'clicks' | 'conversions';
