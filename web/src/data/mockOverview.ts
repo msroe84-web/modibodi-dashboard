@@ -68,12 +68,42 @@ export const productSales: ProductSalesRow[] = [
   conversionRate: Math.round((2 + productConversionRate() * 4) * 10) / 10,
 }));
 
+/** Color-variant breakdown per product. Real per-color intake quantities aren't wired up yet
+ *  (물류 API 연동 전), so these are placeholder splits — but they're the *only* place variant
+ *  quantities are set: each row's `stock` below is always `sum(variants[].quantity)`, computed
+ *  once here, never a second independently-set number. */
+const inventoryVariants: Record<string, { color: string; quantity: number }[]> = {
+  '클래식 브리프': [
+    { color: '블랙', quantity: 90 },
+    { color: '아이보리', quantity: 70 },
+    { color: '그레이', quantity: 50 },
+  ],
+  '심프리 하이웨스트': [
+    { color: '블랙', quantity: 190 },
+    { color: '누드', quantity: 160 },
+    { color: '차콜', quantity: 130 },
+  ],
+  '스윔 보텀': [
+    { color: '블랙', quantity: 25 },
+    { color: '네이비', quantity: 20 },
+    { color: '핑크', quantity: 10 },
+  ],
+  '틴 브리프': [
+    { color: '화이트', quantity: 220 },
+    { color: '베이지', quantity: 210 },
+    { color: '라벤더', quantity: 190 },
+  ],
+};
+
 export const inventory: InventoryRow[] = [
-  { product: '클래식 브리프', stock: 210, avgDailySales: 41 },
-  { product: '심프리 하이웨스트', stock: 480, avgDailySales: 29 },
-  { product: '스윔 보텀', stock: 55, avgDailySales: 10 },
-  { product: '틴 브리프', stock: 620, avgDailySales: 18 },
-];
+  { product: '클래식 브리프', avgDailySales: 41 },
+  { product: '심프리 하이웨스트', avgDailySales: 29 },
+  { product: '스윔 보텀', avgDailySales: 10 },
+  { product: '틴 브리프', avgDailySales: 18 },
+].map((row) => {
+  const variants = inventoryVariants[row.product] ?? [];
+  return { ...row, variants, stock: variants.reduce((sum, v) => sum + v.quantity, 0) };
+});
 
 export const upcomingEvents: CalendarEventRow[] = [
   { date: '2026-09-03', title: '무신사 입점 기획전 시작', type: 'promo' },
