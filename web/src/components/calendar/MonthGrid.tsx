@@ -165,6 +165,7 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
                   {hiddenCount > 0 && (
                     <button
                       type="button"
+                      onMouseDown={(e) => e.stopPropagation()}
                       onClick={(e) => {
                         e.stopPropagation();
                         setPopoverIso(cell.iso);
@@ -176,6 +177,7 @@ export function MonthGrid({ year, month, events, todayIso, onSelectRange, onEdit
                   )}
                   {popoverIso === cell.iso && (
                     <div
+                      onMouseDown={(e) => e.stopPropagation()}
                       className={`absolute z-20 w-52 rounded-xl border border-card-hairline bg-[#1a1a1e] p-2 shadow-2xl ${
                         isLastCol ? 'right-1' : 'left-1'
                       } ${isLastRow ? 'bottom-full mb-1' : 'top-full mt-1'}`}
