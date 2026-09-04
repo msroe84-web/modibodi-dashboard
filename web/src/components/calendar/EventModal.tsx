@@ -41,9 +41,11 @@ export function EventModal({ draft: initialDraft, isEditing, onCancel, onSave, o
   // and would incorrectly close the modal, discarding the in-progress edit.
   const backdropMouseDown = useRef(false);
   const contentBoxRef = useRef<HTMLDivElement>(null);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   useEffect(() => {
     setDraft(initialDraft);
+    setConfirmingDelete(false);
   }, [initialDraft]);
 
   // The browser's native CSS `resize` handle sets el.style.width/height directly as the user
@@ -162,15 +164,15 @@ export function EventModal({ draft: initialDraft, isEditing, onCancel, onSave, o
 
           <div>
             <label className="mb-1 block text-[12px] font-semibold text-ink-secondary">색상</label>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               {EVENT_COLORS.map((c) => (
                 <button
                   key={c.value}
                   type="button"
                   title={c.name}
                   onClick={() => setDraft((prev) => ({ ...prev, color: c.value }))}
-                  className={`h-6 w-6 rounded-full transition-transform ${
-                    draft.color === c.value ? 'scale-110 ring-2 ring-ink ring-offset-2' : ''
+                  className={`h-[18px] w-[18px] rounded-full ring-1 ring-inset ring-black/10 transition-[outline-offset] ${
+                    draft.color === c.value ? 'outline outline-2 outline-offset-2 outline-ink' : ''
                   }`}
                   style={{ backgroundColor: c.value }}
                 />
@@ -179,16 +181,34 @@ export function EventModal({ draft: initialDraft, isEditing, onCancel, onSave, o
           </div>
 
           <div className="flex items-center justify-end gap-2 pt-2">
-            {isEditing && (
+            {isEditing && (confirmingDelete ? (
+              <div className="mr-auto flex items-center gap-2">
+                <span className="text-[12px] text-ink-secondary">정말 삭제할까요?</span>
+                <button
+                  type="button"
+                  onClick={onDelete}
+                  className="rounded-lg bg-critical px-3 py-2 text-[13px] font-semibold text-page hover:opacity-90"
+                >
+                  삭제
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConfirmingDelete(false)}
+                  className="rounded-lg px-3 py-2 text-[13px] font-semibold text-ink-secondary hover:bg-surface-sunken"
+                >
+                  취소
+                </button>
+              </div>
+            ) : (
               <button
                 type="button"
-                onClick={onDelete}
+                onClick={() => setConfirmingDelete(true)}
                 className="mr-auto flex items-center gap-1 rounded-lg px-3 py-2 text-[13px] font-semibold text-critical hover:bg-critical/10"
               >
                 <Trash2Icon size={14} />
                 삭제
               </button>
-            )}
+            ))}
             <button
               type="button"
               onClick={onCancel}
