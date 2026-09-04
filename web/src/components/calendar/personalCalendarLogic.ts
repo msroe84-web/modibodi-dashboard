@@ -72,7 +72,18 @@ export function placeEventBars(weekRow: MonthWeekRow, events: PersonalCalendarEv
   const lanes: { colStart: number; colEnd: number }[][] = [];
   const placed: PlacedEventBar[] = [];
 
-  for (const event of events) {
+  // Multi-day events get first pick of the low (visible) lanes, since losing one to overflow
+  // hides it on every day of its span at once, not just the one day a single-day event would
+  // lose. Within each group, oldest start date first so lane assignment stays stable as new
+  // events are added instead of shuffling every event that's already placed.
+  const ordered = [...events].sort((a, b) => {
+    const aSpan = a.end > a.start ? 0 : 1;
+    const bSpan = b.end > b.start ? 0 : 1;
+    if (aSpan !== bSpan) return aSpan - bSpan;
+    return a.start < b.start ? -1 : a.start > b.start ? 1 : 0;
+  });
+
+  for (const event of ordered) {
     const overlap = weekRow.filter((wd) => wd.iso >= event.start && wd.iso <= event.end);
     if (overlap.length === 0) continue;
     const colStart = overlap[0].col;
